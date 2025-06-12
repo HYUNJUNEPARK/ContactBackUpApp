@@ -17,11 +17,16 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.canbe.phoneguard.ui.theme.PhoneGuardTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MainScreen(onNavigateToSetting: () -> Unit) {
+fun MainScreen(
+    viewModel: MainViewModel = hiltViewModel(),
+    onNavigateToSetting: () -> Unit
+) {
+    //UI
     Scaffold(
         topBar = {
             TopAppBar(title = { Text("Main Screen") })
@@ -49,6 +54,6 @@ fun MainScreen(onNavigateToSetting: () -> Unit) {
 @Composable
 fun MainScreenPreview() {
     PhoneGuardTheme {
-        MainScreen({})
+        MainScreen(onNavigateToSetting = {})
     }
 }
