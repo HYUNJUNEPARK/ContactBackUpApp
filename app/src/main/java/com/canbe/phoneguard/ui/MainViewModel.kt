@@ -1,21 +1,26 @@
 package com.canbe.phoneguard.ui
 
-import android.content.Context
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
-import com.canbe.phoneguard.domain.contact.ContactRepository
+import androidx.lifecycle.viewModelScope
+import com.canbe.phoneguard.domain.contact.Contact
+import com.canbe.phoneguard.domain.contact.GetContactListUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
 class MainViewModel @Inject constructor(
-    private val contactRepository: ContactRepository
+    private val getContactListUserCase: GetContactListUseCase
 ) : ViewModel() {
-    private val _contacts = mutableStateOf<List<String>>(emptyList())
-    val contacts: State<List<String>> = _contacts
+    private val _contactList = mutableStateOf<List<Contact>>(emptyList())
+    val contactList: State<List<Contact>> = _contactList
 
-    fun loadContacts(context: Context) {
-        _contacts.value = contactRepository.getContacts(context)
+    fun getContacts() = viewModelScope.launch(Dispatchers.IO) {
+        _contactList.value = getContactListUserCase.invoke()
+        Timber.d("contactList: ${contactList.value}")
     }
 }
