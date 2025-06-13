@@ -1,4 +1,4 @@
-package com.canbe.phoneguard.ui
+package com.canbe.phoneguard.ui.main
 
 
 import android.Manifest
@@ -51,7 +51,7 @@ import androidx.compose.ui.unit.sp
 import androidx.core.content.ContextCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.canbe.phoneguard.R
-import com.canbe.phoneguard.domain.contact.Contact
+import com.canbe.phoneguard.domain.contact.model.Contact
 import com.canbe.phoneguard.ui.theme.AppSubTheme
 import com.canbe.phoneguard.ui.theme.ButtonDefaultColors
 import com.canbe.phoneguard.ui.theme.PhoneGuardTheme

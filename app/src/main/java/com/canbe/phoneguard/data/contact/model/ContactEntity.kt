@@ -1,4 +1,4 @@
-package com.canbe.phoneguard.data.contact
+package com.canbe.phoneguard.data.contact.model
 
 data class ContactEntity(
     val contactId: String,

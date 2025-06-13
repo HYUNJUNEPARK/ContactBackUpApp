@@ -1,4 +1,4 @@
-package com.canbe.phoneguard.ui
+package com.canbe.phoneguard.ui.main
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -8,6 +8,7 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.canbe.phoneguard.ui.setting.SettingScreen
 import com.canbe.phoneguard.ui.theme.PhoneGuardTheme
 import dagger.hilt.android.AndroidEntryPoint
 

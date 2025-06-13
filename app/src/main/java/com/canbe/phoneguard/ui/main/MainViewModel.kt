@@ -1,11 +1,11 @@
-package com.canbe.phoneguard.ui
+package com.canbe.phoneguard.ui.main
 
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.canbe.phoneguard.domain.contact.Contact
-import com.canbe.phoneguard.domain.contact.GetContactListUseCase
+import com.canbe.phoneguard.domain.contact.model.Contact
+import com.canbe.phoneguard.domain.contact.usecase.GetContactListUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch

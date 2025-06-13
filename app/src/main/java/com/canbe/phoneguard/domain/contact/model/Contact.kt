@@ -1,4 +1,4 @@
-package com.canbe.phoneguard.domain.contact
+package com.canbe.phoneguard.domain.contact.model
 
 data class Contact(
     val id: String,

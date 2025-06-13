@@ -1,11 +1,12 @@
-package com.canbe.phoneguard.data.contact
+package com.canbe.phoneguard.data.contact.source
 
 import android.content.ContentResolver
 import android.provider.ContactsContract
+import com.canbe.phoneguard.data.contact.model.ContactEntity
 import timber.log.Timber
 import javax.inject.Inject
 
-class ContactDataSource @Inject constructor(
+class ContactReadDataSource @Inject constructor(
     private val contentResolver: ContentResolver
 ) {
     fun getContactList(): List<ContactEntity> {
