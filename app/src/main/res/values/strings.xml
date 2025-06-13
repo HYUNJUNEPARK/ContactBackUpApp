@@ -1,4 +1,4 @@
 <resources>
-    <string name="app_name">PhoneGuard</string>
+    <string name="app_name">연락처 백업</string>
     <string name="go_to_setting">권한 설정</string>
 </resources>

@@ -84,16 +84,19 @@ class ContactDataSource @Inject constructor(
                     }
                 }
 
-                contactList.add(
-                    ContactEntity(
-                        contactId = id,
-                        displayNamePrimary = name,
-                        phoneNumbers = phones,
-                        emailAddresses = emails,
-                        organizationCompany = organization,
-                        notes = note
+                //전화 번호가 1개 이상인 유효한 데이터만 가져온다.
+                if (phones.size > 0) {
+                    contactList.add(
+                        ContactEntity(
+                            contactId = id,
+                            displayNamePrimary = name,
+                            phoneNumbers = phones,
+                            emailAddresses = emails,
+                            organizationCompany = organization,
+                            notes = note
+                        )
                     )
-                )
+                }
             }
         }
 
