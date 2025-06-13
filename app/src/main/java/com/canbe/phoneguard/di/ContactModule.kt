@@ -22,6 +22,7 @@ object ContactModule {
     @Provides
     fun provideContactDataSource(contextResolver: ContentResolver): ContactReadDataSource = ContactReadDataSource(contextResolver)
 
+
     @Provides
     fun provideContactRepository(
         contactReadDataSource: ContactReadDataSource,
@@ -33,5 +34,6 @@ object ContactModule {
 
     //
     @Provides
-    fun provideContactBackUpDataSource(context: Context): ContactFileDataSource = ContactFileDataSource(context)
+    fun provideContactBackUpDataSource(@ApplicationContext context: Context): ContactFileDataSource = ContactFileDataSource(context)
+
 }

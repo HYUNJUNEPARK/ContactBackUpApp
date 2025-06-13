@@ -8,26 +8,28 @@ import android.net.Uri
 import android.provider.Settings
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.Button
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
@@ -40,7 +42,10 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -50,11 +55,13 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.content.ContextCompat
 import androidx.hilt.navigation.compose.hiltViewModel
+import coil.compose.rememberAsyncImagePainter
 import com.canbe.phoneguard.R
 import com.canbe.phoneguard.domain.contact.model.Contact
-import com.canbe.phoneguard.ui.theme.AppSubTheme
 import com.canbe.phoneguard.ui.theme.ButtonDefaultColors
+import com.canbe.phoneguard.ui.theme.FixedTextStyle
 import com.canbe.phoneguard.ui.theme.PhoneGuardTheme
+import com.canbe.phoneguard.ui.theme.backColors
 import timber.log.Timber
 
 
@@ -89,7 +96,7 @@ fun MainScreenContent(
     val permissionLauncher = rememberLauncherForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
         isPermissionGranted = isGranted
         Timber.d("LauncherForActivityResult() isPermissionGranted($isGranted)")
-        onPermissionGranted()
+        if (isGranted) onPermissionGranted()
     }
 
     //최초 1회만 권한 확인
@@ -121,16 +128,20 @@ fun MainScreenContent(
                         horizontalAlignment = Alignment.CenterHorizontally,
                     ) {
                         Text(
-                            modifier = Modifier.fillMaxWidth().padding(top = 6.dp),
-                            fontSize = 16.sp,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(top = 3.dp),
+                            style = FixedTextStyle(16.sp),
                             textAlign = TextAlign.Center,
                             text = stringResource(R.string.app_name)
                         )
 
                         if (isPermissionGranted) {
                             Text(
-                                modifier = Modifier.fillMaxWidth(),
-                                fontSize = 12.sp,
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(vertical = 3.dp),
+                                style = FixedTextStyle(),
                                 textAlign = TextAlign.Center,
                                 text = "${contactList.size}개의 연락처가 저장되어 있습니다.",
                                 fontWeight = FontWeight.Bold
@@ -143,7 +154,7 @@ fun MainScreenContent(
                         Icon(
                             imageVector = Icons.Filled.Settings,
                             contentDescription = "설정 버튼",
-                            tint = AppSubTheme
+                            tint = Color.Gray
                         )
                     }
                 },
@@ -164,8 +175,8 @@ fun MainScreenContent(
                     Column {
                         LazyColumn(
                             modifier = Modifier.fillMaxSize(),
-                            contentPadding = PaddingValues(16.dp),
-                            verticalArrangement = Arrangement.spacedBy(8.dp)
+//                            contentPadding = PaddingValues(16.dp),
+//                            verticalArrangement = Arrangement.spacedBy(8.dp)
                         ) {
                             items(contactList) { contact ->
                                 ContactItem(contact)
@@ -174,7 +185,10 @@ fun MainScreenContent(
                     }
                 } else {
                     //권한이 없는 경우
-                    Text("연락처 접근 권한을 허용해 주세요.")
+                    Text(
+                        textAlign = TextAlign.Center,
+                        text = stringResource(R.string.msg_allow_contact)
+                    )
 
                     Button(
                         modifier = Modifier.padding(top = 24.dp),
@@ -199,16 +213,48 @@ fun MainScreenContent(
 
 @Composable
 fun ContactItem(contact: Contact) {
-    Card(
+    val color = remember { backColors.random() }
+
+    Row(
         modifier = Modifier
-            .heightIn(min = 120.dp)
-            .fillMaxWidth()
-            .padding(vertical = 4.dp),
-        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
+            .padding(vertical = 6.dp, horizontal = 8.dp)
+            .fillMaxWidth(),
+        verticalAlignment = Alignment.CenterVertically
     ) {
-        Column(modifier = Modifier.padding(16.dp)) {
-            Text(text = contact.name, style = MaterialTheme.typography.titleMedium)
-            Text(text = contact.number[0], style = MaterialTheme.typography.bodyMedium)
+        if (contact.profileUri != null) {
+
+            Image(
+                painter = rememberAsyncImagePainter(contact.profileUri),
+                contentDescription = "프로필 이미지",
+                modifier = Modifier
+                    .padding(8.dp)
+                    .size(38.dp)
+                    .clip(CircleShape),
+                contentScale = ContentScale.Crop
+            )
+        } else {
+            Box(
+                modifier = Modifier
+                    .padding(8.dp)
+                    .size(38.dp)
+                    .clip(CircleShape)
+                    .background(color),
+                contentAlignment = Alignment.Center
+            ) {
+                Icon(
+                    imageVector = Icons.Filled.Person,
+                    contentDescription = "기본 프로필 아이콘",
+                    tint = Color.White
+                )
+            }
+        }
+
+        Column(
+            modifier = Modifier.fillMaxWidth().padding(start = 6.dp)
+        ) {
+            Text(text = contact.name, fontSize = 18.sp)
+            Text(text = contact.number[0], fontSize = 12.sp)
+            HorizontalDivider(thickness = 0.2.dp, color = Color.Gray)
         }
     }
 }
@@ -220,10 +266,10 @@ fun MainScreenPreview() {
     PhoneGuardTheme {
         MainScreenContent(
             contactList = listOf(
-                Contact("1", "12", listOf("01010100101"), listOf("audzxcv"), "asdf", ""),
-                Contact("1", "12", listOf("01010100101"), listOf("audzxcv"), "asdf", ""),
-                Contact("1", "12", listOf("01010100101"), listOf("audzxcv"), "asdf", ""),
-                Contact("1", "12", listOf("01010100101"), listOf("audzxcv"), "asdf", ""),
+                Contact("1", "12", listOf("01010100101"), listOf("audzxcv"), "asdf", "", null),
+                Contact("1", "12", listOf("01010100101"), listOf("audzxcv"), "asdf", "", null),
+                Contact("1", "12", listOf("01010100101"), listOf("audzxcv"), "asdf", "", null),
+                Contact("1", "12", listOf("01010100101"), listOf("audzxcv"), "asdf", "", null),
             ),
             onNavigateToSetting = {},
             onPermissionGranted = {}

@@ -66,4 +66,6 @@ dependencies {
     implementation("androidx.hilt:hilt-navigation-compose:1.2.0")
     // Timber
     implementation("com.jakewharton.timber:timber:5.0.1")
+    // Coil
+    implementation("io.coil-kt:coil-compose:2.5.0")
 }

@@ -1,9 +1,13 @@
 package com.canbe.phoneguard.ui.theme
 
+import android.annotation.SuppressLint
 import androidx.compose.material3.Typography
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.sp
 
 // Set of Material typography styles to start with
@@ -32,3 +36,13 @@ val Typography = Typography(
     )
     */
 )
+
+@SuppressLint("ComposableNaming")
+@Composable
+fun FixedTextStyle(fontSize: TextUnit = 12.sp) : TextStyle {
+    val configuration = LocalConfiguration.current
+
+    val fontScale = configuration.fontScale
+
+    return TextStyle(fontSize = fontSize / fontScale)
+}

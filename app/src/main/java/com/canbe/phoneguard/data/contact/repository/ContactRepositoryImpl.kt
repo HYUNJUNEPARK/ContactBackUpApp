@@ -18,7 +18,8 @@ class ContactRepositoryImpl @Inject constructor(
                 number = it.phoneNumbers,
                 emails = it.emailAddresses,
                 organization = it.organizationCompany,
-                note = it.notes
+                note = it.notes,
+                profileUri = it.contactPhotoUri
             )
         }
     }

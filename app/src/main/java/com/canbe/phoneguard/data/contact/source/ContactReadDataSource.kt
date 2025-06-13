@@ -1,7 +1,10 @@
 package com.canbe.phoneguard.data.contact.source
 
 import android.content.ContentResolver
+import android.content.ContentUris
+import android.net.Uri
 import android.provider.ContactsContract
+import androidx.core.net.toUri
 import com.canbe.phoneguard.data.contact.model.ContactEntity
 import timber.log.Timber
 import javax.inject.Inject
@@ -25,6 +28,8 @@ class ContactReadDataSource @Inject constructor(
             while (it.moveToNext()) {
                 val id = it.getString(it.getColumnIndexOrThrow(ContactsContract.Contacts._ID))
                 val name = it.getString(it.getColumnIndexOrThrow(ContactsContract.Contacts.DISPLAY_NAME_PRIMARY))
+                val photoUri = it.getString(it.getColumnIndexOrThrow(ContactsContract.Contacts.PHOTO_URI))?.toUri()
+
 
                 val phones = mutableListOf<String>()
                 val emails = mutableListOf<String>()
@@ -94,7 +99,8 @@ class ContactReadDataSource @Inject constructor(
                             phoneNumbers = phones,
                             emailAddresses = emails,
                             organizationCompany = organization,
-                            notes = note
+                            notes = note,
+                            contactPhotoUri = photoUri
                         )
                     )
                 }
