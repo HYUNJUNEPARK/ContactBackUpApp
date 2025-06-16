@@ -2,7 +2,6 @@ package com.canbe.phoneguard.di
 
 import android.content.ContentResolver
 import android.content.Context
-import com.canbe.phoneguard.data.contact.source.ContactFileDataSource
 import com.canbe.phoneguard.data.contact.source.ContactReadDataSource
 import com.canbe.phoneguard.data.contact.repository.ContactRepositoryImpl
 import com.canbe.phoneguard.domain.contact.repository.ContactRepository
@@ -24,16 +23,8 @@ object ContactModule {
 
 
     @Provides
-    fun provideContactRepository(
-        contactReadDataSource: ContactReadDataSource,
-        contactFileDataSource: ContactFileDataSource
-    ): ContactRepository = ContactRepositoryImpl(contactReadDataSource, contactFileDataSource)
+    fun provideContactRepository(contactReadDataSource: ContactReadDataSource): ContactRepository = ContactRepositoryImpl(contactReadDataSource)
 
     @Provides
     fun provideGetContactUseCase(contactPRepository: ContactRepository): GetContactListUseCase = GetContactListUseCase(contactPRepository)
-
-    //
-    @Provides
-    fun provideContactBackUpDataSource(@ApplicationContext context: Context): ContactFileDataSource = ContactFileDataSource(context)
-
 }

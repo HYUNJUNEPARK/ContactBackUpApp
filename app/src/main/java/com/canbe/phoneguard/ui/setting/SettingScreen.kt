@@ -26,9 +26,6 @@ import com.canbe.phoneguard.ui.theme.PhoneGuardTheme
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SettingScreen(onBack: () -> Unit) {
-
-
-
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(
