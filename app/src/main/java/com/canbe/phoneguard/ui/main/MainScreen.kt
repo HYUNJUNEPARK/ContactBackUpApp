@@ -23,10 +23,12 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.Person
-import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.Button
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -47,6 +49,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -58,6 +62,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.rememberAsyncImagePainter
 import com.canbe.phoneguard.R
 import com.canbe.phoneguard.domain.contact.model.Contact
+import com.canbe.phoneguard.ui.theme.AppTheme
 import com.canbe.phoneguard.ui.theme.ButtonDefaultColors
 import com.canbe.phoneguard.ui.theme.FixedTextStyle
 import com.canbe.phoneguard.ui.theme.PhoneGuardTheme
@@ -68,14 +73,17 @@ import timber.log.Timber
 @Composable
 fun MainScreen(
     viewModel: MainViewModel = hiltViewModel(),
-    onNavigateToSetting: () -> Unit
+    onNavigateToSetting: () -> Unit,
 ) {
     val contactList = viewModel.contactList
+    val isLoading = viewModel.isLoading
 
     MainScreenContent(
         contactList = contactList.value,
+        isLoading = isLoading,
         onNavigateToSetting = onNavigateToSetting,
-        onPermissionGranted = { viewModel.getContacts() }
+        onPermissionGranted = { viewModel.getContacts() },
+        onDownloadFileClick = {}
     )
 }
 
@@ -83,8 +91,10 @@ fun MainScreen(
 @Composable
 fun MainScreenContent(
     contactList: List<Contact>,
+    isLoading: Boolean,
     onNavigateToSetting: () -> Unit,
-    onPermissionGranted: () -> Unit
+    onPermissionGranted: () -> Unit,
+    onDownloadFileClick: () -> Unit
 ) {
     val permission = Manifest.permission.READ_CONTACTS
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior() //TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
@@ -152,9 +162,9 @@ fun MainScreenContent(
                 actions = {
                     IconButton(onClick = onNavigateToSetting) {
                         Icon(
-                            imageVector = Icons.Filled.Settings,
-                            contentDescription = "설정 버튼",
-                            tint = Color.Gray
+                            imageVector = Icons.Filled.Menu,
+                            contentDescription = "더보기 버튼",
+                            tint = colorResource(R.color.gray)
                         )
                     }
                 },
@@ -171,15 +181,35 @@ fun MainScreenContent(
             ) {
                 if (isPermissionGranted) {
                     //연락처 접근 권한이 허용된 경우
+                    Box(
+                        modifier = Modifier.fillMaxSize(),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        if (isLoading) {
+                            CircularProgressIndicator(color = colorResource(R.color.appTheme))
+                        } else {
+                            LazyColumn(
+                                modifier = Modifier.fillMaxSize(),
+                            ) {
+                                items(contactList) { contact ->
+                                    ContactItem(contact)
+                                }
+                            }
 
-                    Column {
-                        LazyColumn(
-                            modifier = Modifier.fillMaxSize(),
-//                            contentPadding = PaddingValues(16.dp),
-//                            verticalArrangement = Arrangement.spacedBy(8.dp)
-                        ) {
-                            items(contactList) { contact ->
-                                ContactItem(contact)
+                            FloatingActionButton(
+                                modifier = Modifier
+                                    .padding(18.dp)
+                                    .align(Alignment.BottomEnd),
+                                onClick = { /* TODO: 클릭 이벤트 처리 */ },
+                                containerColor = AppTheme,
+                                contentColor = Color.White,
+                                shape = CircleShape
+                            ) {
+                                Image(
+                                    painter = painterResource(R.drawable.ic_file_download_24),
+                                    contentDescription = "파일 다운로드",
+                                    modifier = Modifier.size(32.dp)
+                                )
                             }
                         }
                     }
@@ -271,8 +301,10 @@ fun MainScreenPreview() {
                 Contact("1", "12", listOf("01010100101"), listOf("audzxcv"), "asdf", "", null),
                 Contact("1", "12", listOf("01010100101"), listOf("audzxcv"), "asdf", "", null),
             ),
+            isLoading = false,
             onNavigateToSetting = {},
-            onPermissionGranted = {}
+            onPermissionGranted = {},
+            onDownloadFileClick = {}
         )
     }
 }
