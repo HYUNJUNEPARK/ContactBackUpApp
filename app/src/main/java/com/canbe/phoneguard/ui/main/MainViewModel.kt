@@ -6,7 +6,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.canbe.phoneguard.domain.contact.model.Contact
+import com.canbe.phoneguard.domain.contact.model.toUiModel
 import com.canbe.phoneguard.domain.contact.usecase.GetContactListUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -21,12 +21,14 @@ class MainViewModel @Inject constructor(
     var isLoading by mutableStateOf(false)
         private set
 
-    private val _contactList = mutableStateOf<List<Contact>>(emptyList())
-    val contactList: State<List<Contact>> = _contactList
+    private val _contactList = mutableStateOf<List<ContactUiModel>>(emptyList())
+    val contactList: State<List<ContactUiModel>> = _contactList
 
     fun getContacts() = viewModelScope.launch(Dispatchers.IO) {
         isLoading = true
-        _contactList.value = getContactListUserCase.invoke()
+        _contactList.value = getContactListUserCase.invoke().map {
+            it.toUiModel()
+        }
         Timber.d("contactList: ${contactList.value}")
         isLoading = false
     }

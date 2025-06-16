@@ -1,12 +1,12 @@
-package com.canbe.phoneguard.domain.contact.model
+package com.canbe.phoneguard.ui.main
 
 import android.net.Uri
 
-data class Contact(
+data class ContactUiModel(
     val id: String,
     val name: String,
     val number: List<String>,
-    val emails: List<String>,
+    val emails: List<String> = emptyList(),
     val organization: String?,
     val note: String?,
     val profileUri: Uri?

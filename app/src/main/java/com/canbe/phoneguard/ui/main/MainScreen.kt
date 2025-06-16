@@ -61,14 +61,12 @@ import androidx.core.content.ContextCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.rememberAsyncImagePainter
 import com.canbe.phoneguard.R
-import com.canbe.phoneguard.domain.contact.model.Contact
 import com.canbe.phoneguard.ui.theme.AppTheme
 import com.canbe.phoneguard.ui.theme.ButtonDefaultColors
 import com.canbe.phoneguard.ui.theme.FixedTextStyle
 import com.canbe.phoneguard.ui.theme.PhoneGuardTheme
 import com.canbe.phoneguard.ui.theme.backColors
 import timber.log.Timber
-
 
 @Composable
 fun MainScreen(
@@ -83,21 +81,84 @@ fun MainScreen(
         isLoading = isLoading,
         onNavigateToSetting = onNavigateToSetting,
         onPermissionGranted = { viewModel.getContacts() },
-        onDownloadFileClick = {}
+        onDownloadFileClick = {
+
+        }
     )
 }
+
+
+//private const val FILE_NAME = "user_list.json"
+//
+//fun saveToDownloads(context: Context, contactList: List<ContactUiModel>) {
+//    Timber.e("testLog $contactList")
+//
+//    val tt = contactList.map {
+//        it.toUiModel()
+//    }
+//
+//    val jsonString = Gson().toJson(tt)
+//
+//    val outputStream: OutputStream? = if (Build.VERSION.SDK_INT >= 29) {
+//        val contentValues = ContentValues().apply {
+//            put(MediaStore.Downloads.DISPLAY_NAME, FILE_NAME)
+//            put(MediaStore.Downloads.MIME_TYPE, "application/json")
+//            put(MediaStore.Downloads.RELATIVE_PATH, Environment.DIRECTORY_DOWNLOADS)
+//            put(MediaStore.Downloads.IS_PENDING, 1)
+//        }
+//
+//        val resolver = context.contentResolver
+//        val collection = MediaStore.Downloads.getContentUri(MediaStore.VOLUME_EXTERNAL_PRIMARY)
+//        val itemUri: Uri? = resolver.insert(collection, contentValues)
+//
+//        itemUri?.let { uri ->
+//            resolver.openOutputStream(uri)?.also {
+//                contentValues.clear()
+//                contentValues.put(MediaStore.Downloads.IS_PENDING, 0)
+//                resolver.update(uri, contentValues, null, null)
+//            }
+//        }
+//    } else {
+//        val downloadsDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
+//        val file = File(downloadsDir, FILE_NAME)
+//        FileOutputStream(file)
+//    }
+//
+//    try {
+//        outputStream?.use {
+//            it.write(jsonString.toByteArray())
+//        }
+//    } catch (e: IOException) {
+//        e.printStackTrace()
+//    }
+//}
+//
+//fun loadFromDownloads(context: Context): List<ContactDto> {
+//    val file = File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), FILE_NAME)
+//    if (!file.exists()) return emptyList()
+//
+//    return try {
+//        val jsonString = file.readText()
+//        val listType = object : TypeToken<List<ContactDto>>() {}.type
+//        Gson().fromJson(jsonString, listType)
+//
+//    } catch (e: Exception) {
+//        e.printStackTrace()
+//        emptyList()
+//    }
+//}
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MainScreenContent(
-    contactList: List<Contact>,
+    contactList: List<ContactUiModel>,
     isLoading: Boolean,
     onNavigateToSetting: () -> Unit,
     onPermissionGranted: () -> Unit,
     onDownloadFileClick: () -> Unit
 ) {
     val permission = Manifest.permission.READ_CONTACTS
-    val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior() //TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
+    val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
 
     val context = LocalContext.current
 
@@ -153,7 +214,7 @@ fun MainScreenContent(
                                     .padding(vertical = 3.dp),
                                 style = FixedTextStyle(),
                                 textAlign = TextAlign.Center,
-                                text = "${contactList.size}개의 연락처가 저장되어 있습니다.",
+                                text = stringResource(R.string.format_contact_count, contactList.size),
                                 fontWeight = FontWeight.Bold
                             )
                         }
@@ -200,7 +261,7 @@ fun MainScreenContent(
                                 modifier = Modifier
                                     .padding(18.dp)
                                     .align(Alignment.BottomEnd),
-                                onClick = { /* TODO: 클릭 이벤트 처리 */ },
+                                onClick = { onDownloadFileClick() },
                                 containerColor = AppTheme,
                                 contentColor = Color.White,
                                 shape = CircleShape
@@ -242,7 +303,7 @@ fun MainScreenContent(
 }
 
 @Composable
-fun ContactItem(contact: Contact) {
+fun ContactItem(contactUiModel: ContactUiModel) {
     val color = remember { backColors.random() }
 
     Row(
@@ -251,10 +312,9 @@ fun ContactItem(contact: Contact) {
             .fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        if (contact.profileUri != null) {
-
+        if (contactUiModel.profileUri != null) {
             Image(
-                painter = rememberAsyncImagePainter(contact.profileUri),
+                painter = rememberAsyncImagePainter(contactUiModel.profileUri),
                 contentDescription = "프로필 이미지",
                 modifier = Modifier
                     .padding(8.dp)
@@ -280,10 +340,12 @@ fun ContactItem(contact: Contact) {
         }
 
         Column(
-            modifier = Modifier.fillMaxWidth().padding(start = 6.dp)
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(start = 6.dp)
         ) {
-            Text(text = contact.name, fontSize = 18.sp)
-            Text(text = contact.number[0], fontSize = 12.sp)
+            Text(text = contactUiModel.name, fontSize = 18.sp)
+            Text(text = contactUiModel.number[0], fontSize = 12.sp)
             HorizontalDivider(thickness = 0.2.dp, color = Color.Gray)
         }
     }
@@ -296,10 +358,10 @@ fun MainScreenPreview() {
     PhoneGuardTheme {
         MainScreenContent(
             contactList = listOf(
-                Contact("1", "12", listOf("01010100101"), listOf("audzxcv"), "asdf", "", null),
-                Contact("1", "12", listOf("01010100101"), listOf("audzxcv"), "asdf", "", null),
-                Contact("1", "12", listOf("01010100101"), listOf("audzxcv"), "asdf", "", null),
-                Contact("1", "12", listOf("01010100101"), listOf("audzxcv"), "asdf", "", null),
+                ContactUiModel("1", "12", listOf("01010100101"), listOf("audzxcv"), "asdf", "", null),
+                ContactUiModel("1", "12", listOf("01010100101"), listOf("audzxcv"), "asdf", "", null),
+                ContactUiModel("1", "12", listOf("01010100101"), listOf("audzxcv"), "asdf", "", null),
+                ContactUiModel("1", "12", listOf("01010100101"), listOf("audzxcv"), "asdf", "", null),
             ),
             isLoading = false,
             onNavigateToSetting = {},
