@@ -1,7 +1,7 @@
-package com.canbe.phoneguard.data.contact.model
+package com.canbe.phoneguard.data.contact
 
 import androidx.core.net.toUri
-import com.canbe.phoneguard.domain.contact.model.ContactEntity
+import com.canbe.phoneguard.domain.contact.ContactEntity
 
 data class ContactDto(
     val contactId: String,
@@ -17,7 +17,7 @@ fun ContactDto.toEntity(): ContactEntity {
     return ContactEntity(
         id = contactId,
         name = displayNamePrimary ?: "",
-        number = phoneNumbers,
+        numbers = phoneNumbers,
         emails = emailAddresses,
         organization = organizationCompany,
         note = notes,

@@ -1,7 +1,5 @@
-package com.canbe.phoneguard.domain.contact.usecase
+package com.canbe.phoneguard.domain.contact
 
-import com.canbe.phoneguard.domain.contact.repository.ContactRepository
-import com.canbe.phoneguard.domain.contact.model.ContactEntity
 import javax.inject.Inject
 
 class GetContactListUseCase @Inject constructor(

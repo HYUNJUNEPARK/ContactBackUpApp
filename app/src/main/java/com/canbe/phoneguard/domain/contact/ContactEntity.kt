@@ -1,4 +1,4 @@
-package com.canbe.phoneguard.domain.contact.model
+package com.canbe.phoneguard.domain.contact
 
 import android.net.Uri
 import com.canbe.phoneguard.ui.main.ContactUiModel
@@ -6,7 +6,7 @@ import com.canbe.phoneguard.ui.main.ContactUiModel
 data class ContactEntity(
     val id: String,
     val name: String,
-    val number: List<String>,
+    val numbers: List<String>,
     val emails: List<String>,
     val organization: String?,
     val note: String?,
@@ -17,7 +17,7 @@ fun ContactEntity.toUiModel(): ContactUiModel {
     return ContactUiModel(
         id = id,
         name = name,
-        number = number,
+        numbers = numbers,
         emails = emails,
         organization = organization,
         note = note,
