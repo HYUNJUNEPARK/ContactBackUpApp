@@ -1,4 +1,4 @@
-package com.canbe.phoneguard.ui
+package com.canbe.phoneguard.ui.screen
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement

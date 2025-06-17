@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.canbe.phoneguard.domain.contact.GetContactListUseCase
 import com.canbe.phoneguard.domain.file.ExportFileUseCase
+import com.canbe.phoneguard.domain.file.ExtractContentFromFileUseCase
 import com.canbe.phoneguard.ui.model.ContactUiModel
 import com.canbe.phoneguard.ui.model.DialogEvent
 import com.canbe.phoneguard.ui.model.UiEvent
@@ -21,7 +22,8 @@ import javax.inject.Inject
 @HiltViewModel
 class MainViewModel @Inject constructor(
     private val getContactListUserCase: GetContactListUseCase,
-    private val exportFileUseCase: ExportFileUseCase
+    private val exportFileUseCase: ExportFileUseCase,
+    private val extractContentFromFileUseCase: ExtractContentFromFileUseCase
 ) : ViewModel() {
     private val _uiState = mutableStateOf<UiState>(UiState.Loading)
     val uiState: State<UiState> = _uiState
@@ -53,5 +55,11 @@ class MainViewModel @Inject constructor(
 
         _uiState.value = UiState.Success
         _uiEvent.emit(UiEvent.ShowSuccessDialog(DialogEvent.EXPORT))
+    }
+
+    fun extractFromFile() = viewModelScope.launch(Dispatchers.IO) {
+        Timber.d("extractFromFile()")
+
+
     }
 }

@@ -10,6 +10,7 @@ import timber.log.Timber
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
+import java.io.InputStreamReader
 import java.io.OutputStream
 import javax.inject.Inject
 
@@ -68,23 +69,28 @@ class FileDataSource @Inject constructor(
             e.printStackTrace()
         }
     }
+
+    /**
+     * 선택한 JSON 파일에서 데이터 추출
+     */
+    fun extractDataFromFile(uri: Uri): String {
+        try {
+            Timber.d("extractDataFromFile() $uri")
+
+            val resolver = contentResolver
+
+            val fileStrData = resolver.openInputStream(uri)?.use { inputStream ->
+                InputStreamReader(inputStream).use { reader ->
+                    reader.readText()
+                }
+            }
+
+            if (fileStrData == null) throw NullPointerException("Read File Result is null")
+            Timber.d("extractDataFromFile() fileContent: $fileStrData")
+            return fileStrData
+        } catch (e: Exception) {
+            e.printStackTrace()
+            throw e
+        }
+    }
 }
-
-
-//private const val FILE_NAME = "user_list.json"
-//
-//fun loadFromDownloads(): List<ContactDto> {
-//    Timber.d("loadFromDownloads()")
-//
-//    val file = File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), FILE_NAME)
-//    if (!file.exists()) return emptyList()
-//
-//    return try {
-//        val jsonString = file.readText()
-//        val listType = object : TypeToken<List<ContactDto>>() {}.type
-//        Gson().fromJson(jsonString, listType)
-//    } catch (e: Exception) {
-//        e.printStackTrace()
-//        emptyList()
-//    }
-//}

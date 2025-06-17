@@ -1,4 +1,4 @@
-package com.canbe.phoneguard.ui
+package com.canbe.phoneguard.ui.screen
 
 
 import android.Manifest
@@ -61,6 +61,7 @@ import androidx.core.content.ContextCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.rememberAsyncImagePainter
 import com.canbe.phoneguard.R
+import com.canbe.phoneguard.ui.MainViewModel
 import com.canbe.phoneguard.ui.dialog.CustomDialog
 import com.canbe.phoneguard.ui.model.ContactUiModel
 import com.canbe.phoneguard.ui.model.DialogEvent
@@ -77,6 +78,7 @@ import timber.log.Timber
 fun MainScreen(
     viewModel: MainViewModel = hiltViewModel(),
     onNavigateToSetting: () -> Unit,
+    onNavigateToExtractContent: () -> Unit
 ) {
     val contactList = viewModel.contactList
 
@@ -112,6 +114,7 @@ fun MainScreen(
         contactList = contactList.value,
         uiState = uiState,
         onNavigateToSetting = onNavigateToSetting,
+        onNavigateToExtractContent = onNavigateToExtractContent,
         onPermissionGranted = { viewModel.getContacts() },
         onDownloadFileClick = { viewModel.exportToFile() }
     )
@@ -123,6 +126,7 @@ fun MainScreenContent(
     contactList: List<ContactUiModel>,
     uiState: UiState,
     onNavigateToSetting: () -> Unit,
+    onNavigateToExtractContent: () -> Unit,
     onPermissionGranted: () -> Unit,
     onDownloadFileClick: () -> Unit
 ) {
@@ -231,21 +235,45 @@ fun MainScreenContent(
                             }
                         }
 
-                        FloatingActionButton(
-                            modifier = Modifier
-                                .padding(18.dp)
-                                .align(Alignment.BottomEnd),
-                            onClick = { onDownloadFileClick() },
-                            containerColor = AppTheme,
-                            contentColor = Color.White,
-                            shape = CircleShape
+                        Column(
+                            modifier = Modifier.align(Alignment.BottomEnd)
                         ) {
-                            Image(
-                                painter = painterResource(R.drawable.ic_file_download_24),
-                                contentDescription = "파일 다운로드",
-                                modifier = Modifier.size(32.dp)
-                            )
+
+                            FloatingActionButton(
+                                modifier = Modifier
+                                    .padding(18.dp),
+                                onClick = { onNavigateToExtractContent() },
+                                containerColor = AppTheme,
+                                contentColor = Color.White,
+                                shape = CircleShape
+                            ) {
+                                Image(
+                                    painter = painterResource(R.drawable.ic_launcher_background),
+                                    contentDescription = "파일 다운로드",
+                                    modifier = Modifier.size(32.dp)
+                                )
+                            }
+
+
+                            FloatingActionButton(
+                                modifier = Modifier
+                                    .padding(18.dp),
+                                    //.align(Alignment.BottomEnd),
+                                onClick = { onDownloadFileClick() },
+                                containerColor = AppTheme,
+                                contentColor = Color.White,
+                                shape = CircleShape
+                            ) {
+                                Image(
+                                    painter = painterResource(R.drawable.ic_file_download_24),
+                                    contentDescription = "파일 다운로드",
+                                    modifier = Modifier.size(32.dp)
+                                )
+                            }
                         }
+
+
+
 
                     }
                 } else {
@@ -339,6 +367,7 @@ fun MainScreenPreview() {
             ),
             uiState = UiState.Loading,
             onNavigateToSetting = {},
+            onNavigateToExtractContent = {},
             onPermissionGranted = {},
             onDownloadFileClick = {}
         )
