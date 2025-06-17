@@ -1,7 +1,7 @@
 package com.canbe.phoneguard.domain.contact
 
 import android.net.Uri
-import com.canbe.phoneguard.ui.main.model.ContactUiModel
+import com.canbe.phoneguard.ui.model.ContactUiModel
 
 data class ContactEntity(
     val id: String,

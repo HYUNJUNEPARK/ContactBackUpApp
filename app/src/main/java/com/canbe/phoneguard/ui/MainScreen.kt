@@ -1,4 +1,4 @@
-package com.canbe.phoneguard.ui.main
+package com.canbe.phoneguard.ui
 
 
 import android.Manifest
@@ -62,10 +62,10 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.rememberAsyncImagePainter
 import com.canbe.phoneguard.R
 import com.canbe.phoneguard.ui.dialog.CustomDialog
-import com.canbe.phoneguard.ui.main.model.ContactUiModel
-import com.canbe.phoneguard.ui.main.model.DialogEvent
-import com.canbe.phoneguard.ui.main.model.UiEvent
-import com.canbe.phoneguard.ui.main.model.UiState
+import com.canbe.phoneguard.ui.model.ContactUiModel
+import com.canbe.phoneguard.ui.model.DialogEvent
+import com.canbe.phoneguard.ui.model.UiEvent
+import com.canbe.phoneguard.ui.model.UiState
 import com.canbe.phoneguard.ui.theme.AppTheme
 import com.canbe.phoneguard.ui.theme.ButtonDefaultColors
 import com.canbe.phoneguard.ui.theme.FixedTextStyle

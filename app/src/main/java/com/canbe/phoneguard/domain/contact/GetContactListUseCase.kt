@@ -1,6 +1,6 @@
 package com.canbe.phoneguard.domain.contact
 
-import com.canbe.phoneguard.ui.main.model.ContactUiModel
+import com.canbe.phoneguard.ui.model.ContactUiModel
 import javax.inject.Inject
 
 class GetContactListUseCase @Inject constructor(

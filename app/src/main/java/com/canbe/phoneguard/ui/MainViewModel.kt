@@ -1,4 +1,4 @@
-package com.canbe.phoneguard.ui.main
+package com.canbe.phoneguard.ui
 
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
@@ -6,10 +6,10 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.canbe.phoneguard.domain.contact.GetContactListUseCase
 import com.canbe.phoneguard.domain.file.ExportFileUseCase
-import com.canbe.phoneguard.ui.main.model.ContactUiModel
-import com.canbe.phoneguard.ui.main.model.DialogEvent
-import com.canbe.phoneguard.ui.main.model.UiEvent
-import com.canbe.phoneguard.ui.main.model.UiState
+import com.canbe.phoneguard.ui.model.ContactUiModel
+import com.canbe.phoneguard.ui.model.DialogEvent
+import com.canbe.phoneguard.ui.model.UiEvent
+import com.canbe.phoneguard.ui.model.UiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableSharedFlow

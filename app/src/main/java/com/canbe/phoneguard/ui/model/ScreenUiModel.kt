@@ -1,4 +1,4 @@
-package com.canbe.phoneguard.ui.main.model
+package com.canbe.phoneguard.ui.model
 
 sealed class UiState {
     data object Loading : UiState()
