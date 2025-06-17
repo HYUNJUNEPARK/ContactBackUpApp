@@ -6,7 +6,6 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
 import android.provider.Settings
-import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
@@ -62,6 +61,11 @@ import androidx.core.content.ContextCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.rememberAsyncImagePainter
 import com.canbe.phoneguard.R
+import com.canbe.phoneguard.ui.dialog.CustomDialog
+import com.canbe.phoneguard.ui.main.model.ContactUiModel
+import com.canbe.phoneguard.ui.main.model.DialogEvent
+import com.canbe.phoneguard.ui.main.model.UiEvent
+import com.canbe.phoneguard.ui.main.model.UiState
 import com.canbe.phoneguard.ui.theme.AppTheme
 import com.canbe.phoneguard.ui.theme.ButtonDefaultColors
 import com.canbe.phoneguard.ui.theme.FixedTextStyle
@@ -74,32 +78,42 @@ fun MainScreen(
     viewModel: MainViewModel = hiltViewModel(),
     onNavigateToSetting: () -> Unit,
 ) {
-    val context = LocalContext.current
-
     val contactList = viewModel.contactList
-    val isLoading = viewModel.isLoading
+
+    val uiState by viewModel.uiState
+
+    var showDialog: DialogEvent? by remember { mutableStateOf(null) }
+
+    LaunchedEffect(Unit) {
+        viewModel.uiEvent.collect { uiEvent ->
+            when(uiEvent) {
+                is UiEvent.ShowSuccessDialog -> showDialog = uiEvent.event
+                else -> { Timber.e("Not handling this uiEvent $uiEvent") }
+            }
+        }
+    }
+
+    when(showDialog) {
+        DialogEvent.EXPORT -> {
+            CustomDialog(
+                content = "연락처 정보가 파일로 성공적으로 저장되었습니다.\n파일은 [다운로드] 폴더에서 확인할 수 있습니다.",
+                isSingleButton = false,
+                leftButtonText = "닫기",
+                onLeftButtonRequest = { showDialog = null },
+                rightButtonText = "파일 확인하기",
+                onRightButtonRequest = {},
+                onDismissRequest = { showDialog = null }
+            )
+        }
+        else -> {}
+    }
 
     MainScreenContent(
         contactList = contactList.value,
-        isLoading = isLoading,
+        uiState = uiState,
         onNavigateToSetting = onNavigateToSetting,
         onPermissionGranted = { viewModel.getContacts() },
-        onDownloadFileClick = {
-            viewModel.exportToFile {
-                //파일 생성
-                Toast.makeText(context, "Export Contact Success", Toast.LENGTH_SHORT).show()
-
-
-//                CustomDialog(
-//                    content = "파일 생성 완료 !",
-//                    isSingleButton = false,
-//                    leftButtonText = "닫기",
-//                    leftButtonAction = {},
-//                    rightButtonText = "",
-//                    rightButtonAction = {}
-//                )
-            }
-        }
+        onDownloadFileClick = { viewModel.exportToFile() }
     )
 }
 
@@ -107,17 +121,17 @@ fun MainScreen(
 @Composable
 fun MainScreenContent(
     contactList: List<ContactUiModel>,
-    isLoading: Boolean,
+    uiState: UiState,
     onNavigateToSetting: () -> Unit,
     onPermissionGranted: () -> Unit,
     onDownloadFileClick: () -> Unit
 ) {
-    val permission = Manifest.permission.READ_CONTACTS
-    val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
-
     val context = LocalContext.current
 
+    val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
+
     var isPermissionGranted by remember { mutableStateOf(false) }
+    val permission = Manifest.permission.READ_CONTACTS
 
     val permissionLauncher = rememberLauncherForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
         isPermissionGranted = isGranted
@@ -201,33 +215,38 @@ fun MainScreenContent(
                         modifier = Modifier.fillMaxSize(),
                         contentAlignment = Alignment.Center
                     ) {
-                        if (isLoading) {
-                            CircularProgressIndicator(color = colorResource(R.color.appTheme))
-                        } else {
-                            LazyColumn(
-                                modifier = Modifier.fillMaxSize(),
-                            ) {
-                                items(contactList) { contact ->
-                                    ContactItem(contact)
-                                }
-                            }
-
-                            FloatingActionButton(
-                                modifier = Modifier
-                                    .padding(18.dp)
-                                    .align(Alignment.BottomEnd),
-                                onClick = { onDownloadFileClick() },
-                                containerColor = AppTheme,
-                                contentColor = Color.White,
-                                shape = CircleShape
-                            ) {
-                                Image(
-                                    painter = painterResource(R.drawable.ic_file_download_24),
-                                    contentDescription = "파일 다운로드",
-                                    modifier = Modifier.size(32.dp)
-                                )
+                        when(uiState) {
+                            is UiState.Loading -> CircularProgressIndicator(color = colorResource(R.color.appTheme))
+                            is UiState.Success -> {}
+                            is UiState.Error -> {
+                                Timber.e("Exception: ${uiState.exception}")
                             }
                         }
+
+                        LazyColumn(
+                            modifier = Modifier.fillMaxSize(),
+                        ) {
+                            items(contactList) { contact ->
+                                ContactItem(contact)
+                            }
+                        }
+
+                        FloatingActionButton(
+                            modifier = Modifier
+                                .padding(18.dp)
+                                .align(Alignment.BottomEnd),
+                            onClick = { onDownloadFileClick() },
+                            containerColor = AppTheme,
+                            contentColor = Color.White,
+                            shape = CircleShape
+                        ) {
+                            Image(
+                                painter = painterResource(R.drawable.ic_file_download_24),
+                                contentDescription = "파일 다운로드",
+                                modifier = Modifier.size(32.dp)
+                            )
+                        }
+
                     }
                 } else {
                     //권한이 없는 경우
@@ -318,7 +337,7 @@ fun MainScreenPreview() {
                 ContactUiModel("1", "12", listOf("01010100101"), listOf("audzxcv"), "asdf", "", null),
                 ContactUiModel("1", "12", listOf("01010100101"), listOf("audzxcv"), "asdf", "", null),
             ),
-            isLoading = false,
+            uiState = UiState.Loading,
             onNavigateToSetting = {},
             onPermissionGranted = {},
             onDownloadFileClick = {}

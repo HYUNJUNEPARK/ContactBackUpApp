@@ -17,6 +17,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
@@ -28,20 +29,19 @@ fun CustomDialog(
     content: String,
     isSingleButton: Boolean = true,
     leftButtonText: String,
-    leftButtonAction: () -> Unit,
+    onLeftButtonRequest: () -> Unit,
     rightButtonText: String,
-    rightButtonAction: () -> Unit
+    onRightButtonRequest: () -> Unit,
+    onDismissRequest: () -> Unit
 ) {
-    Dialog(onDismissRequest = {}) {
+    Dialog(onDismissRequest = onDismissRequest) {
         Box(
             modifier = Modifier
                 .width(300.dp)
-                .height(200.dp)
                 .background(Color.White, shape = RoundedCornerShape(16.dp))
                 .padding(16.dp)
         ) {
             Column(
-                modifier = Modifier.fillMaxSize(),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.SpaceBetween
             ) {
@@ -49,19 +49,23 @@ fun CustomDialog(
                     Text(text = title, fontWeight = FontWeight.Bold)
                 }
 
-                Text(text = content)
+                Text(
+                    modifier = Modifier.fillMaxWidth().padding(vertical = 22.dp),
+                    textAlign = TextAlign.Center,
+                    text = content
+                )
 
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.spacedBy(16.dp, Alignment.CenterHorizontally)
                 ) {
                     CustomStyledButton(leftButtonText) {
-                        leftButtonAction()
+                        onLeftButtonRequest()
                     }
 
                     if(!isSingleButton) {
                         CustomStyledButton(rightButtonText) {
-                            rightButtonAction()
+                            onRightButtonRequest()
                         }
                     }
                 }
@@ -79,7 +83,8 @@ fun CustomDialogPreview() {
         isSingleButton = false,
         leftButtonText = "Left Button",
         rightButtonText = "Right Button",
-        leftButtonAction = {},
-        rightButtonAction = {}
+        onLeftButtonRequest = {},
+        onRightButtonRequest = {},
+        onDismissRequest = {}
     )
 }

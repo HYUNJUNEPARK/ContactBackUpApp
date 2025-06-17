@@ -1,7 +1,7 @@
 package com.canbe.phoneguard.domain.file
 
-import com.canbe.phoneguard.ui.main.ContactUiModel
-import com.canbe.phoneguard.ui.main.toDto
+import com.canbe.phoneguard.ui.main.model.ContactUiModel
+import com.canbe.phoneguard.ui.main.model.toDto
 import com.google.gson.Gson
 import javax.inject.Inject
 

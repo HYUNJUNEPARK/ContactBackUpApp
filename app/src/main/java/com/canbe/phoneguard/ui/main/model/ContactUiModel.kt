@@ -1,4 +1,4 @@
-package com.canbe.phoneguard.ui.main
+package com.canbe.phoneguard.ui.main.model
 
 import android.net.Uri
 import com.canbe.phoneguard.data.contact.ContactDto
