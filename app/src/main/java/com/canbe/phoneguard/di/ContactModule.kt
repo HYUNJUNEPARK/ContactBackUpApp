@@ -19,12 +19,11 @@ object ContactModule {
     fun provideContentResolver(@ApplicationContext context: Context): ContentResolver = context.contentResolver
 
     @Provides
-    fun provideContactDataSource(contextResolver: ContentResolver): ContactDataSource = ContactDataSource(contextResolver)
-
-
-    @Provides
-    fun provideContactRepository(contactDataSource: ContactDataSource): ContactRepository = ContactRepositoryImpl(contactDataSource)
+    fun provideContactDataSource(contentResolver: ContentResolver): ContactDataSource = ContactDataSource(contentResolver)
 
     @Provides
-    fun provideGetContactUseCase(contactPRepository: ContactRepository): GetContactListUseCase = GetContactListUseCase(contactPRepository)
+    fun provideContactRepository(dataSource: ContactDataSource): ContactRepository = ContactRepositoryImpl(dataSource)
+
+    @Provides
+    fun provideGetContactUseCase(repository: ContactRepository): GetContactListUseCase = GetContactListUseCase(repository)
 }
