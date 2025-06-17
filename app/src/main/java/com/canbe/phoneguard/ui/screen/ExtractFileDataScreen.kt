@@ -1,5 +1,8 @@
 package com.canbe.phoneguard.ui.screen
 
+import android.net.Uri
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -20,12 +23,36 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.canbe.phoneguard.R
+import com.canbe.phoneguard.ui.MainViewModel
 import com.canbe.phoneguard.ui.theme.PhoneGuardTheme
+
+
+@Composable
+fun ExtractFileDataScreen(
+    viewModel: MainViewModel = hiltViewModel(),
+    onBack: () -> Unit
+) {
+    ExtractFileDataScreenContent(
+        onBack = onBack,
+        onFileUri = { viewModel.extractFromFile(it) }
+    )
+}
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ExtractContentScreen(onBack: () -> Unit) {
+fun ExtractFileDataScreenContent(
+    onBack: () -> Unit,
+    onFileUri: (Uri) -> Unit,
+) {
+    val launcher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.OpenDocument(),
+        onResult = { uri: Uri? ->
+            uri?.let { onFileUri(it) }
+        }
+    )
+
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(
@@ -55,6 +82,16 @@ fun ExtractContentScreen(onBack: () -> Unit) {
 
                 Spacer(modifier = Modifier.weight(1f)) // 가운데 공간 차지
 
+                IconButton(onClick = {
+                    launcher.launch(arrayOf("application/json"))
+                }) {
+                    Image(
+                        painter = painterResource(R.drawable.ic_arrow_back_24_day_night),
+                        contentDescription = "Back",
+                        modifier = Modifier.size(24.dp)
+                    )
+                }
+
                 Text("This is the Extract Screen2") // 하단 고정
             }
         }
@@ -65,6 +102,9 @@ fun ExtractContentScreen(onBack: () -> Unit) {
 @Composable
 fun ExtractContentScreenPreview() {
     PhoneGuardTheme {
-        ExtractContentScreen({})
+        ExtractFileDataScreenContent(
+            onBack = {},
+            onFileUri = {}
+        )
     }
 }

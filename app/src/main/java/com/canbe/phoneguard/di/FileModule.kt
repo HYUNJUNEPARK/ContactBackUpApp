@@ -4,7 +4,7 @@ import android.content.ContentResolver
 import com.canbe.phoneguard.data.file.FileDataSource
 import com.canbe.phoneguard.data.file.FileRepositoryImpl
 import com.canbe.phoneguard.domain.file.ExportFileUseCase
-import com.canbe.phoneguard.domain.file.ExtractContentFromFileUseCase
+import com.canbe.phoneguard.domain.file.ExtractFileDataUseCase
 import com.canbe.phoneguard.domain.file.FileRepository
 import dagger.Module
 import dagger.Provides
@@ -24,5 +24,5 @@ object FileModule {
     fun provideExportFileUseCase(repository: FileRepository): ExportFileUseCase = ExportFileUseCase(repository)
 
     @Provides
-    fun provideExtractDataFromFileUseCase(repository: FileRepository): ExtractContentFromFileUseCase = ExtractContentFromFileUseCase(repository)
+    fun provideExtractDataFromFileUseCase(repository: FileRepository): ExtractFileDataUseCase = ExtractFileDataUseCase(repository)
 }

@@ -11,7 +11,7 @@ class FileRepositoryImpl @Inject constructor(
         fileDataSource.exportToFile(fileContent = content)
     }
 
-    override suspend fun extractContentFromFile(uri: Uri) {
-        fileDataSource.extractDataFromFile(uri)
+    override suspend fun extractContentFromFile(uri: Uri): String {
+        return fileDataSource.extractDataFromFile(uri)
     }
 }

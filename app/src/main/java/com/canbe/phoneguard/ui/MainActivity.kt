@@ -8,7 +8,7 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.canbe.phoneguard.ui.screen.ExtractContentScreen
+import com.canbe.phoneguard.ui.screen.ExtractFileDataScreen
 import com.canbe.phoneguard.ui.screen.MainScreen
 import com.canbe.phoneguard.ui.screen.SettingScreen
 import com.canbe.phoneguard.ui.theme.PhoneGuardTheme
@@ -48,7 +48,7 @@ fun MyApp() {
             )
         }
         composable(MainScreen.EXTRACT.name) {
-            ExtractContentScreen (
+            ExtractFileDataScreen (
                 onBack = { navController.popBackStack() }
             )
         }

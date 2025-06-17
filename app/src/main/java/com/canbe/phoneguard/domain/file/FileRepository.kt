@@ -4,5 +4,5 @@ import android.net.Uri
 
 interface FileRepository {
     suspend fun exportToFile(content: String)
-    suspend fun extractContentFromFile(uri: Uri)
+    suspend fun extractContentFromFile(uri: Uri): String
 }
