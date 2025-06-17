@@ -1,6 +1,8 @@
 <resources>
     <string name="app_name">연락처 백업</string>
+    <string name="setting">설정</string>
     <string name="go_to_setting">권한 설정</string>
     <string name="msg_allow_contact">연락처 접근 권한을 허용해 주세요.</string>
     <string name="format_contact_count">%1$s개의 연락처가 저장되어 있습니다.</string>
+    <string name="close">닫기</string>
 </resources>

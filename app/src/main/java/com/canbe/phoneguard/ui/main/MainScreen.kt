@@ -24,8 +24,8 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -86,30 +86,22 @@ fun MainScreen(
         onPermissionGranted = { viewModel.getContacts() },
         onDownloadFileClick = {
             viewModel.exportToFile {
+                //파일 생성
                 Toast.makeText(context, "Export Contact Success", Toast.LENGTH_SHORT).show()
+
+
+//                CustomDialog(
+//                    content = "파일 생성 완료 !",
+//                    isSingleButton = false,
+//                    leftButtonText = "닫기",
+//                    leftButtonAction = {},
+//                    rightButtonText = "",
+//                    rightButtonAction = {}
+//                )
             }
         }
     )
 }
-
-//private const val FILE_NAME = "user_list.json"
-//
-//fun loadFromDownloads(): List<ContactDto> {
-//    Timber.d("loadFromDownloads()")
-//
-//    val file = File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), FILE_NAME)
-//    if (!file.exists()) return emptyList()
-//
-//    return try {
-//        val jsonString = file.readText()
-//        val listType = object : TypeToken<List<ContactDto>>() {}.type
-//        Gson().fromJson(jsonString, listType)
-//    } catch (e: Exception) {
-//        e.printStackTrace()
-//        emptyList()
-//    }
-//}
-
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -155,7 +147,7 @@ fun MainScreenContent(
         topBar = {
             TopAppBar(
                 navigationIcon = {
-                    Spacer(modifier = Modifier.size(48.dp)) //아이콘 크기
+                    Spacer(modifier = Modifier.size(48.dp))
                 },
                 title = {
                     Column(
@@ -186,8 +178,8 @@ fun MainScreenContent(
                 actions = {
                     IconButton(onClick = onNavigateToSetting) {
                         Icon(
-                            imageVector = Icons.Filled.Menu,
-                            contentDescription = "더보기 버튼",
+                            imageVector = Icons.Outlined.Settings,
+                            contentDescription = "설정 버튼",
                             tint = colorResource(R.color.gray)
                         )
                     }

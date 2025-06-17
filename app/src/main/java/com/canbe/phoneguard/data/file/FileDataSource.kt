@@ -69,3 +69,22 @@ class FileDataSource @Inject constructor(
         }
     }
 }
+
+
+//private const val FILE_NAME = "user_list.json"
+//
+//fun loadFromDownloads(): List<ContactDto> {
+//    Timber.d("loadFromDownloads()")
+//
+//    val file = File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), FILE_NAME)
+//    if (!file.exists()) return emptyList()
+//
+//    return try {
+//        val jsonString = file.readText()
+//        val listType = object : TypeToken<List<ContactDto>>() {}.type
+//        Gson().fromJson(jsonString, listType)
+//    } catch (e: Exception) {
+//        e.printStackTrace()
+//        emptyList()
+//    }
+//}
