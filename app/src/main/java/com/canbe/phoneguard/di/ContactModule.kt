@@ -2,10 +2,10 @@ package com.canbe.phoneguard.di
 
 import android.content.ContentResolver
 import android.content.Context
-import com.canbe.phoneguard.data.contact.source.ContactReadDataSource
-import com.canbe.phoneguard.data.contact.repository.ContactRepositoryImpl
-import com.canbe.phoneguard.domain.contact.repository.ContactRepository
-import com.canbe.phoneguard.domain.contact.usecase.GetContactListUseCase
+import com.canbe.phoneguard.data.contact.ContactDataSource
+import com.canbe.phoneguard.data.contact.ContactRepositoryImpl
+import com.canbe.phoneguard.domain.contact.ContactRepository
+import com.canbe.phoneguard.domain.contact.GetContactListUseCase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -19,12 +19,11 @@ object ContactModule {
     fun provideContentResolver(@ApplicationContext context: Context): ContentResolver = context.contentResolver
 
     @Provides
-    fun provideContactDataSource(contextResolver: ContentResolver): ContactReadDataSource = ContactReadDataSource(contextResolver)
-
-
-    @Provides
-    fun provideContactRepository(contactReadDataSource: ContactReadDataSource): ContactRepository = ContactRepositoryImpl(contactReadDataSource)
+    fun provideContactDataSource(contentResolver: ContentResolver): ContactDataSource = ContactDataSource(contentResolver)
 
     @Provides
-    fun provideGetContactUseCase(contactPRepository: ContactRepository): GetContactListUseCase = GetContactListUseCase(contactPRepository)
+    fun provideContactRepository(dataSource: ContactDataSource): ContactRepository = ContactRepositoryImpl(dataSource)
+
+    @Provides
+    fun provideGetContactUseCase(repository: ContactRepository): GetContactListUseCase = GetContactListUseCase(repository)
 }

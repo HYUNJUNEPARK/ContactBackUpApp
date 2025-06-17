@@ -68,4 +68,6 @@ dependencies {
     implementation("com.jakewharton.timber:timber:5.0.1")
     // Coil
     implementation("io.coil-kt:coil-compose:2.5.0")
+    // Gson
+    implementation("com.google.code.gson:gson:2.13.1")
 }

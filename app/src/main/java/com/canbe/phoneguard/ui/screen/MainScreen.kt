@@ -1,4 +1,4 @@
-package com.canbe.phoneguard.ui.main
+package com.canbe.phoneguard.ui.screen
 
 
 import android.Manifest
@@ -23,8 +23,8 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -61,7 +61,12 @@ import androidx.core.content.ContextCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.rememberAsyncImagePainter
 import com.canbe.phoneguard.R
-import com.canbe.phoneguard.domain.contact.model.Contact
+import com.canbe.phoneguard.ui.MainViewModel
+import com.canbe.phoneguard.ui.dialog.CustomDialog
+import com.canbe.phoneguard.ui.model.ContactUiModel
+import com.canbe.phoneguard.ui.model.DialogEvent
+import com.canbe.phoneguard.ui.model.UiEvent
+import com.canbe.phoneguard.ui.model.UiState
 import com.canbe.phoneguard.ui.theme.AppTheme
 import com.canbe.phoneguard.ui.theme.ButtonDefaultColors
 import com.canbe.phoneguard.ui.theme.FixedTextStyle
@@ -69,39 +74,68 @@ import com.canbe.phoneguard.ui.theme.PhoneGuardTheme
 import com.canbe.phoneguard.ui.theme.backColors
 import timber.log.Timber
 
-
 @Composable
 fun MainScreen(
     viewModel: MainViewModel = hiltViewModel(),
     onNavigateToSetting: () -> Unit,
+    onNavigateToExtractContent: () -> Unit
 ) {
     val contactList = viewModel.contactList
-    val isLoading = viewModel.isLoading
+
+    val uiState by viewModel.uiState
+
+    var showDialog: DialogEvent? by remember { mutableStateOf(null) }
+
+    LaunchedEffect(Unit) {
+        viewModel.uiEvent.collect { uiEvent ->
+            when(uiEvent) {
+                is UiEvent.ShowSuccessDialog -> showDialog = uiEvent.event
+                else -> { Timber.e("Not handling this uiEvent $uiEvent") }
+            }
+        }
+    }
+
+    when(showDialog) {
+        DialogEvent.EXPORT -> {
+            CustomDialog(
+                content = "연락처 정보가 파일로 성공적으로 저장되었습니다.\n파일은 [다운로드] 폴더에서 확인할 수 있습니다.",
+                isSingleButton = false,
+                leftButtonText = "닫기",
+                onLeftButtonRequest = { showDialog = null },
+                rightButtonText = "파일 확인하기",
+                onRightButtonRequest = {},
+                onDismissRequest = { showDialog = null }
+            )
+        }
+        else -> {}
+    }
 
     MainScreenContent(
         contactList = contactList.value,
-        isLoading = isLoading,
+        uiState = uiState,
         onNavigateToSetting = onNavigateToSetting,
+        onNavigateToExtractContent = onNavigateToExtractContent,
         onPermissionGranted = { viewModel.getContacts() },
-        onDownloadFileClick = {}
+        onDownloadFileClick = { viewModel.exportToFile() }
     )
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MainScreenContent(
-    contactList: List<Contact>,
-    isLoading: Boolean,
+    contactList: List<ContactUiModel>,
+    uiState: UiState,
     onNavigateToSetting: () -> Unit,
+    onNavigateToExtractContent: () -> Unit,
     onPermissionGranted: () -> Unit,
     onDownloadFileClick: () -> Unit
 ) {
-    val permission = Manifest.permission.READ_CONTACTS
-    val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior() //TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
-
     val context = LocalContext.current
 
+    val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
+
     var isPermissionGranted by remember { mutableStateOf(false) }
+    val permission = Manifest.permission.READ_CONTACTS
 
     val permissionLauncher = rememberLauncherForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
         isPermissionGranted = isGranted
@@ -131,7 +165,7 @@ fun MainScreenContent(
         topBar = {
             TopAppBar(
                 navigationIcon = {
-                    Spacer(modifier = Modifier.size(48.dp)) //아이콘 크기
+                    Spacer(modifier = Modifier.size(48.dp))
                 },
                 title = {
                     Column(
@@ -153,7 +187,7 @@ fun MainScreenContent(
                                     .padding(vertical = 3.dp),
                                 style = FixedTextStyle(),
                                 textAlign = TextAlign.Center,
-                                text = "${contactList.size}개의 연락처가 저장되어 있습니다.",
+                                text = stringResource(R.string.format_contact_count, contactList.size),
                                 fontWeight = FontWeight.Bold
                             )
                         }
@@ -162,8 +196,8 @@ fun MainScreenContent(
                 actions = {
                     IconButton(onClick = onNavigateToSetting) {
                         Icon(
-                            imageVector = Icons.Filled.Menu,
-                            contentDescription = "더보기 버튼",
+                            imageVector = Icons.Outlined.Settings,
+                            contentDescription = "설정 버튼",
                             tint = colorResource(R.color.gray)
                         )
                     }
@@ -185,22 +219,47 @@ fun MainScreenContent(
                         modifier = Modifier.fillMaxSize(),
                         contentAlignment = Alignment.Center
                     ) {
-                        if (isLoading) {
-                            CircularProgressIndicator(color = colorResource(R.color.appTheme))
-                        } else {
-                            LazyColumn(
-                                modifier = Modifier.fillMaxSize(),
-                            ) {
-                                items(contactList) { contact ->
-                                    ContactItem(contact)
-                                }
+                        when(uiState) {
+                            is UiState.Loading -> CircularProgressIndicator(color = colorResource(R.color.appTheme))
+                            is UiState.Success -> {}
+                            is UiState.Error -> {
+                                Timber.e("Exception: ${uiState.exception}")
                             }
+                        }
+
+                        LazyColumn(
+                            modifier = Modifier.fillMaxSize(),
+                        ) {
+                            items(contactList) { contact ->
+                                ContactItem(contact)
+                            }
+                        }
+
+                        Column(
+                            modifier = Modifier.align(Alignment.BottomEnd)
+                        ) {
 
                             FloatingActionButton(
                                 modifier = Modifier
-                                    .padding(18.dp)
-                                    .align(Alignment.BottomEnd),
-                                onClick = { /* TODO: 클릭 이벤트 처리 */ },
+                                    .padding(18.dp),
+                                onClick = { onNavigateToExtractContent() },
+                                containerColor = AppTheme,
+                                contentColor = Color.White,
+                                shape = CircleShape
+                            ) {
+                                Image(
+                                    painter = painterResource(R.drawable.ic_launcher_background),
+                                    contentDescription = "파일 다운로드",
+                                    modifier = Modifier.size(32.dp)
+                                )
+                            }
+
+
+                            FloatingActionButton(
+                                modifier = Modifier
+                                    .padding(18.dp),
+                                    //.align(Alignment.BottomEnd),
+                                onClick = { onDownloadFileClick() },
                                 containerColor = AppTheme,
                                 contentColor = Color.White,
                                 shape = CircleShape
@@ -212,6 +271,10 @@ fun MainScreenContent(
                                 )
                             }
                         }
+
+
+
+
                     }
                 } else {
                     //권한이 없는 경우
@@ -242,7 +305,7 @@ fun MainScreenContent(
 }
 
 @Composable
-fun ContactItem(contact: Contact) {
+fun ContactItem(contactUiModel: ContactUiModel) {
     val color = remember { backColors.random() }
 
     Row(
@@ -251,10 +314,9 @@ fun ContactItem(contact: Contact) {
             .fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        if (contact.profileUri != null) {
-
+        if (contactUiModel.profileUri != null) {
             Image(
-                painter = rememberAsyncImagePainter(contact.profileUri),
+                painter = rememberAsyncImagePainter(contactUiModel.profileUri),
                 contentDescription = "프로필 이미지",
                 modifier = Modifier
                     .padding(8.dp)
@@ -280,10 +342,12 @@ fun ContactItem(contact: Contact) {
         }
 
         Column(
-            modifier = Modifier.fillMaxWidth().padding(start = 6.dp)
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(start = 6.dp)
         ) {
-            Text(text = contact.name, fontSize = 18.sp)
-            Text(text = contact.number[0], fontSize = 12.sp)
+            Text(text = contactUiModel.name, fontSize = 18.sp)
+            Text(text = contactUiModel.numbers[0], fontSize = 12.sp)
             HorizontalDivider(thickness = 0.2.dp, color = Color.Gray)
         }
     }
@@ -296,13 +360,14 @@ fun MainScreenPreview() {
     PhoneGuardTheme {
         MainScreenContent(
             contactList = listOf(
-                Contact("1", "12", listOf("01010100101"), listOf("audzxcv"), "asdf", "", null),
-                Contact("1", "12", listOf("01010100101"), listOf("audzxcv"), "asdf", "", null),
-                Contact("1", "12", listOf("01010100101"), listOf("audzxcv"), "asdf", "", null),
-                Contact("1", "12", listOf("01010100101"), listOf("audzxcv"), "asdf", "", null),
+                ContactUiModel("1", "12", listOf("01010100101"), listOf("audzxcv"), "asdf", "", null),
+                ContactUiModel("1", "12", listOf("01010100101"), listOf("audzxcv"), "asdf", "", null),
+                ContactUiModel("1", "12", listOf("01010100101"), listOf("audzxcv"), "asdf", "", null),
+                ContactUiModel("1", "12", listOf("01010100101"), listOf("audzxcv"), "asdf", "", null),
             ),
-            isLoading = false,
+            uiState = UiState.Loading,
             onNavigateToSetting = {},
+            onNavigateToExtractContent = {},
             onPermissionGranted = {},
             onDownloadFileClick = {}
         )

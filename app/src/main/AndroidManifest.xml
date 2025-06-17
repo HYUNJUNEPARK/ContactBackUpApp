@@ -4,6 +4,15 @@
 
     <uses-permission android:name="android.permission.READ_CONTACTS" />
 
+    <!--API 28 이하에서는 WRITE_EXTERNAL_STORAGE 퍼미션이 필요-->
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"
+        android:maxSdkVersion="28" />
+
+    <!-- AndroidManifest.xml -->
+    <!--API 32 이하에서는 READ_EXTERNAL_STORAGE 퍼미션이 필요-->
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"
+        android:maxSdkVersion="32"/>
+
     <application
         android:allowBackup="true"
         android:name=".application.MyApplication"
@@ -16,7 +25,7 @@
         android:theme="@style/Theme.PhoneGuard"
         tools:targetApi="31">
         <activity
-            android:name=".ui.main.MainActivity"
+            android:name=".ui.MainActivity"
             android:exported="true"
             android:label="@string/app_name"
             android:theme="@style/Theme.PhoneGuard">

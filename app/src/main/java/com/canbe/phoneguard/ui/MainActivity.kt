@@ -1,4 +1,4 @@
-package com.canbe.phoneguard.ui.main
+package com.canbe.phoneguard.ui
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -8,9 +8,15 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.canbe.phoneguard.ui.setting.SettingScreen
+import com.canbe.phoneguard.ui.screen.ExtractFileDataScreen
+import com.canbe.phoneguard.ui.screen.MainScreen
+import com.canbe.phoneguard.ui.screen.SettingScreen
 import com.canbe.phoneguard.ui.theme.PhoneGuardTheme
 import dagger.hilt.android.AndroidEntryPoint
+
+enum class MainScreen {
+    MAIN, SETTING, EXTRACT
+}
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
@@ -29,16 +35,22 @@ class MainActivity : ComponentActivity() {
 fun MyApp() {
     val navController = rememberNavController()
 
-    NavHost(navController = navController, startDestination = "main") {
-        composable("main") {
+    NavHost(navController = navController, startDestination = MainScreen.MAIN.name) {
+        composable(MainScreen.MAIN.name) {
             MainScreen(
-                onNavigateToSetting = { navController.navigate("setting") },
+                onNavigateToSetting = { navController.navigate(MainScreen.SETTING.name) },
+                onNavigateToExtractContent = { navController.navigate(MainScreen.EXTRACT.name) }
             )
         }
-        composable("setting") {
-            SettingScreen(onBack = {
-                navController.popBackStack()
-            })
+        composable(MainScreen.SETTING.name) {
+            SettingScreen(
+                onBack = { navController.popBackStack() }
+            )
+        }
+        composable(MainScreen.EXTRACT.name) {
+            ExtractFileDataScreen (
+                onBack = { navController.popBackStack() }
+            )
         }
     }
 }

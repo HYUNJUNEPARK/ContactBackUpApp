@@ -1,20 +1,16 @@
-package com.canbe.phoneguard.data.contact.source
+package com.canbe.phoneguard.data.contact
 
 import android.content.ContentResolver
-import android.content.ContentUris
-import android.net.Uri
 import android.provider.ContactsContract
-import androidx.core.net.toUri
-import com.canbe.phoneguard.data.contact.model.ContactEntity
 import timber.log.Timber
 import javax.inject.Inject
 
-class ContactReadDataSource @Inject constructor(
+class ContactDataSource @Inject constructor(
     private val contentResolver: ContentResolver
 ) {
-    fun getContactList(): List<ContactEntity> {
+    fun getContactList(): List<ContactDto> {
         Timber.i("getContacts()")
-        val contactList = mutableListOf<ContactEntity>()
+        val contactList = mutableListOf<ContactDto>()
 
         val cursor = contentResolver.query(
             ContactsContract.Contacts.CONTENT_URI,
@@ -28,7 +24,7 @@ class ContactReadDataSource @Inject constructor(
             while (it.moveToNext()) {
                 val id = it.getString(it.getColumnIndexOrThrow(ContactsContract.Contacts._ID))
                 val name = it.getString(it.getColumnIndexOrThrow(ContactsContract.Contacts.DISPLAY_NAME_PRIMARY))
-                val photoUri = it.getString(it.getColumnIndexOrThrow(ContactsContract.Contacts.PHOTO_URI))?.toUri()
+                val photoUri = it.getString(it.getColumnIndexOrThrow(ContactsContract.Contacts.PHOTO_URI))
 
 
                 val phones = mutableListOf<String>()
@@ -93,7 +89,7 @@ class ContactReadDataSource @Inject constructor(
                 //전화 번호가 1개 이상인 유효한 데이터만 가져온다.
                 if (phones.size > 0) {
                     contactList.add(
-                        ContactEntity(
+                        ContactDto(
                             contactId = id,
                             displayNamePrimary = name,
                             phoneNumbers = phones,
@@ -110,5 +106,4 @@ class ContactReadDataSource @Inject constructor(
         Timber.i("getContacts(): $contactList")
         return contactList
     }
-
 }
