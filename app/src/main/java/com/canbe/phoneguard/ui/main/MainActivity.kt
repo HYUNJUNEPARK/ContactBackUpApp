@@ -1,11 +1,14 @@
 package com.canbe.phoneguard.ui.main
 
+import android.Manifest
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.runtime.Composable
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -20,8 +23,22 @@ enum class MainScreenType {
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
+
+    private val permissions = listOf(
+        Manifest.permission.READ_CONTACTS
+    )
+
+    private lateinit var permissionLauncher: ActivityResultLauncher<Array<String>>
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        permissionLauncher = registerForActivityResult(
+            ActivityResultContracts.RequestMultiplePermissions()
+        ) { resultMap ->
+            //viewModel.onPermissionResults(resultMap)
+        }
+
         enableEdgeToEdge()
         setContent {
             PhoneGuardTheme {
