@@ -2,18 +2,16 @@ package com.canbe.phoneguard.ui.main
 
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.canbe.phoneguard.domain.contact.GetContactListUseCase
 import com.canbe.phoneguard.domain.file.ExportFileUseCase
+import com.canbe.phoneguard.ui.base.BaseViewModel
 import com.canbe.phoneguard.ui.model.ContactUiModel
 import com.canbe.phoneguard.ui.model.DialogEvent
 import com.canbe.phoneguard.ui.model.UiEvent
 import com.canbe.phoneguard.ui.model.UiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import javax.inject.Inject
@@ -22,23 +20,17 @@ import javax.inject.Inject
 class MainViewModel @Inject constructor(
     private val getContactListUserCase: GetContactListUseCase,
     private val exportFileUseCase: ExportFileUseCase,
-) : ViewModel() {
-    private val _uiState = mutableStateOf<UiState>(UiState.Loading)
-    val uiState: State<UiState> = _uiState
-
-    private val _uiEvent = MutableSharedFlow<UiEvent>()
-    val uiEvent: SharedFlow<UiEvent> = _uiEvent
-
+) : BaseViewModel() {
     private val _contactList = mutableStateOf<List<ContactUiModel>>(emptyList())
     val contactList: State<List<ContactUiModel>> = _contactList
 
     fun getContacts() = viewModelScope.launch(Dispatchers.IO) {
         Timber.d("getContacts(): ${contactList.value}")
-        _uiState.value = UiState.Loading
+        updateUiState(UiState.Loading)
 
         _contactList.value = getContactListUserCase.invoke()
 
-        _uiState.value = UiState.Success
+        updateUiState(UiState.Success)
     }
 
     fun exportToFile() = viewModelScope.launch(Dispatchers.IO) {
@@ -47,11 +39,11 @@ class MainViewModel @Inject constructor(
             Timber.e("exportToFile() contactList is empty")
             return@launch
         }
-        _uiState.value = UiState.Loading
+        updateUiState(UiState.Loading)
 
         exportFileUseCase(contactList.value)
 
-        _uiState.value = UiState.Success
-        _uiEvent.emit(UiEvent.ShowSuccessDialog(DialogEvent.EXPORT))
+        updateUiState(UiState.Success)
+        updateUiEvent(UiEvent.ShowSuccessDialog(DialogEvent.EXPORT))
     }
 }

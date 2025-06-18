@@ -1,4 +1,4 @@
-package com.canbe.phoneguard.domain.contact
+package com.canbe.phoneguard.domain.model
 
 import android.net.Uri
 import com.canbe.phoneguard.ui.model.ContactUiModel

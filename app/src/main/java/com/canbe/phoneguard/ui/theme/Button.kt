@@ -32,7 +32,7 @@ fun CustomStyledButton(
     ) {
         Text(
             text = text,
-            style = FixedTextStyle(12.sp)
+            style = FixedTextStyle(14.sp)
         )
     }
 }

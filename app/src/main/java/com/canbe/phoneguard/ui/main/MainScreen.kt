@@ -68,6 +68,7 @@ import com.canbe.phoneguard.ui.model.UiEvent
 import com.canbe.phoneguard.ui.model.UiState
 import com.canbe.phoneguard.ui.theme.AppTheme
 import com.canbe.phoneguard.ui.theme.ButtonDefaultColors
+import com.canbe.phoneguard.ui.theme.ContactItem
 import com.canbe.phoneguard.ui.theme.FixedTextStyle
 import com.canbe.phoneguard.ui.theme.PhoneGuardTheme
 import com.canbe.phoneguard.ui.theme.backColors
@@ -270,10 +271,6 @@ fun MainScreenContent(
                                 )
                             }
                         }
-
-
-
-
                     }
                 } else {
                     //권한이 없는 경우
@@ -302,56 +299,6 @@ fun MainScreenContent(
         }
     )
 }
-
-@Composable
-fun ContactItem(contactUiModel: ContactUiModel) {
-    val color = remember { backColors.random() }
-
-    Row(
-        modifier = Modifier
-            .padding(vertical = 6.dp, horizontal = 8.dp)
-            .fillMaxWidth(),
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        if (contactUiModel.profileUri != null) {
-            Image(
-                painter = rememberAsyncImagePainter(contactUiModel.profileUri),
-                contentDescription = "프로필 이미지",
-                modifier = Modifier
-                    .padding(8.dp)
-                    .size(38.dp)
-                    .clip(CircleShape),
-                contentScale = ContentScale.Crop
-            )
-        } else {
-            Box(
-                modifier = Modifier
-                    .padding(8.dp)
-                    .size(38.dp)
-                    .clip(CircleShape)
-                    .background(color),
-                contentAlignment = Alignment.Center
-            ) {
-                Icon(
-                    imageVector = Icons.Filled.Person,
-                    contentDescription = "기본 프로필 아이콘",
-                    tint = Color.White
-                )
-            }
-        }
-
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(start = 6.dp)
-        ) {
-            Text(text = contactUiModel.name, fontSize = 18.sp)
-            Text(text = contactUiModel.numbers[0], fontSize = 12.sp)
-            HorizontalDivider(thickness = 0.2.dp, color = Color.Gray)
-        }
-    }
-}
-
 
 @Preview(showBackground = true)
 @Composable

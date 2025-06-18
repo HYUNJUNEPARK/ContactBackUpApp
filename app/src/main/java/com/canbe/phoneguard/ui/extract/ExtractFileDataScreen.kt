@@ -8,6 +8,8 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.outlined.ArrowBack
 import androidx.compose.material3.CenterAlignedTopAppBar
@@ -27,6 +29,8 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.canbe.phoneguard.R
 import com.canbe.phoneguard.ui.model.ContactUiModel
 import com.canbe.phoneguard.ui.model.UiState
+import com.canbe.phoneguard.ui.theme.ContactItem
+import com.canbe.phoneguard.ui.theme.CustomStyledButton
 import com.canbe.phoneguard.ui.theme.PhoneGuardTheme
 
 
@@ -86,20 +90,21 @@ fun ExtractFileDataScreenContent(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center
             ) {
-                Text("This is the Extract Screen1") // 상단 고정
-
-                Spacer(modifier = Modifier.weight(1f)) // 가운데 공간 차지
-
-                IconButton(onClick = {
-                    launcher.launch(arrayOf("application/json"))
-                }) {
-                    Icon(
-                        imageVector = Icons.AutoMirrored.Outlined.ArrowBack,
-                        contentDescription = "뒤로가기",
-                    )
+                if (contactList.isEmpty()) {
+                    //복원 가능한 연락처가 없는 경우
+                    CustomStyledButton("연락처 파일 가져오기") {
+                        launcher.launch(arrayOf("application/json"))
+                    }
+                } else {
+                    //복원 가능한 연락처가 있는 경우
+                    LazyColumn(
+                        modifier = Modifier.fillMaxSize(),
+                    ) {
+                        items(contactList) { contact ->
+                            ContactItem(contact)
+                        }
+                    }
                 }
-
-                Text("This is the Extract Screen2") // 하단 고정
             }
         }
     )
