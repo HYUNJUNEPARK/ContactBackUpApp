@@ -1,5 +1,7 @@
-package com.canbe.phoneguard.ui
+package com.canbe.phoneguard.ui.main
 
+import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -8,14 +10,12 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.canbe.phoneguard.ui.screen.ExtractFileDataScreen
-import com.canbe.phoneguard.ui.screen.MainScreen
-import com.canbe.phoneguard.ui.screen.SettingScreen
+import com.canbe.phoneguard.ui.extract.ExtractFileDataActivity
 import com.canbe.phoneguard.ui.theme.PhoneGuardTheme
 import dagger.hilt.android.AndroidEntryPoint
 
-enum class MainScreen {
-    MAIN, SETTING, EXTRACT
+enum class MainScreenType {
+    MAIN, SETTING,
 }
 
 @AndroidEntryPoint
@@ -25,30 +25,28 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             PhoneGuardTheme {
-                MyApp()
+                MyApp(this@MainActivity)
             }
         }
     }
 }
 
 @Composable
-fun MyApp() {
+fun MyApp(activity: Activity) {
     val navController = rememberNavController()
 
-    NavHost(navController = navController, startDestination = MainScreen.MAIN.name) {
-        composable(MainScreen.MAIN.name) {
+    NavHost(navController = navController, startDestination = MainScreenType.MAIN.name) {
+        composable(MainScreenType.MAIN.name) {
             MainScreen(
-                onNavigateToSetting = { navController.navigate(MainScreen.SETTING.name) },
-                onNavigateToExtractContent = { navController.navigate(MainScreen.EXTRACT.name) }
+                onNavigateToSetting = { navController.navigate(MainScreenType.SETTING.name) },
+                onGoToExtractFileDataActivity = {
+                    val intent = Intent(activity, ExtractFileDataActivity::class.java)
+                    activity.startActivity(intent)
+                }
             )
         }
-        composable(MainScreen.SETTING.name) {
+        composable(MainScreenType.SETTING.name) {
             SettingScreen(
-                onBack = { navController.popBackStack() }
-            )
-        }
-        composable(MainScreen.EXTRACT.name) {
-            ExtractFileDataScreen (
                 onBack = { navController.popBackStack() }
             )
         }

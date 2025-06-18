@@ -1,13 +1,11 @@
-package com.canbe.phoneguard.ui
+package com.canbe.phoneguard.ui.main
 
-import android.net.Uri
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.canbe.phoneguard.domain.contact.GetContactListUseCase
 import com.canbe.phoneguard.domain.file.ExportFileUseCase
-import com.canbe.phoneguard.domain.file.ExtractFileDataUseCase
 import com.canbe.phoneguard.ui.model.ContactUiModel
 import com.canbe.phoneguard.ui.model.DialogEvent
 import com.canbe.phoneguard.ui.model.UiEvent
@@ -24,7 +22,6 @@ import javax.inject.Inject
 class MainViewModel @Inject constructor(
     private val getContactListUserCase: GetContactListUseCase,
     private val exportFileUseCase: ExportFileUseCase,
-    private val extractFileDataUseCase: ExtractFileDataUseCase
 ) : ViewModel() {
     private val _uiState = mutableStateOf<UiState>(UiState.Loading)
     val uiState: State<UiState> = _uiState
@@ -52,15 +49,9 @@ class MainViewModel @Inject constructor(
         }
         _uiState.value = UiState.Loading
 
-        exportFileUseCase.invoke(contactList.value)
+        exportFileUseCase(contactList.value)
 
         _uiState.value = UiState.Success
         _uiEvent.emit(UiEvent.ShowSuccessDialog(DialogEvent.EXPORT))
-    }
-
-    fun extractFromFile(uri: Uri) = viewModelScope.launch(Dispatchers.IO) {
-        Timber.d("extractFromFile(): $uri")
-        val fileContent = extractFileDataUseCase.invoke(uri)
-        Timber.d("extractFromFile() fileContent: $fileContent")
     }
 }

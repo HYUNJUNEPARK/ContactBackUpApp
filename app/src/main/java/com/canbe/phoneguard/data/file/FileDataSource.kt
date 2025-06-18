@@ -6,6 +6,9 @@ import android.net.Uri
 import android.os.Build
 import android.os.Environment
 import android.provider.MediaStore
+import com.canbe.phoneguard.data.model.ContactDto
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 import timber.log.Timber
 import java.io.File
 import java.io.FileOutputStream
@@ -73,7 +76,7 @@ class FileDataSource @Inject constructor(
     /**
      * 선택한 JSON 파일에서 데이터 추출
      */
-    fun extractDataFromFile(uri: Uri): String {
+    fun extractDataFromFile(uri: Uri): List<ContactDto> {
         try {
             Timber.d("extractDataFromFile() $uri")
 
@@ -86,8 +89,13 @@ class FileDataSource @Inject constructor(
             }
 
             if (fileStrData == null) throw NullPointerException("Read File Result is null")
-            Timber.d("extractDataFromFile() fileContent: $fileStrData")
-            return fileStrData
+            Timber.d("extractDataFromFile() fileContent(JsonStr): $fileStrData")
+
+            val type = object : TypeToken<List<ContactDto>>() {}.type
+            val contactList: List<ContactDto> = Gson().fromJson(fileStrData, type)
+            Timber.d("extractDataFromFile() contactList(Dto): $contactList")
+
+            return contactList
         } catch (e: Exception) {
             e.printStackTrace()
             throw e

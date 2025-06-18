@@ -2,6 +2,7 @@ package com.canbe.phoneguard.data.contact
 
 import android.content.ContentResolver
 import android.provider.ContactsContract
+import com.canbe.phoneguard.data.model.ContactDto
 import timber.log.Timber
 import javax.inject.Inject
 

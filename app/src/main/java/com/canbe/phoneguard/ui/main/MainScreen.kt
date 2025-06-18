@@ -1,4 +1,4 @@
-package com.canbe.phoneguard.ui.screen
+package com.canbe.phoneguard.ui.main
 
 
 import android.Manifest
@@ -61,7 +61,6 @@ import androidx.core.content.ContextCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.rememberAsyncImagePainter
 import com.canbe.phoneguard.R
-import com.canbe.phoneguard.ui.MainViewModel
 import com.canbe.phoneguard.ui.dialog.CustomDialog
 import com.canbe.phoneguard.ui.model.ContactUiModel
 import com.canbe.phoneguard.ui.model.DialogEvent
@@ -78,7 +77,7 @@ import timber.log.Timber
 fun MainScreen(
     viewModel: MainViewModel = hiltViewModel(),
     onNavigateToSetting: () -> Unit,
-    onNavigateToExtractContent: () -> Unit
+    onGoToExtractFileDataActivity: () -> Unit
 ) {
     val contactList = viewModel.contactList
 
@@ -114,7 +113,7 @@ fun MainScreen(
         contactList = contactList.value,
         uiState = uiState,
         onNavigateToSetting = onNavigateToSetting,
-        onNavigateToExtractContent = onNavigateToExtractContent,
+        onGoToExtractFileDataActivity = onGoToExtractFileDataActivity,
         onPermissionGranted = { viewModel.getContacts() },
         onDownloadFileClick = { viewModel.exportToFile() }
     )
@@ -126,7 +125,7 @@ fun MainScreenContent(
     contactList: List<ContactUiModel>,
     uiState: UiState,
     onNavigateToSetting: () -> Unit,
-    onNavigateToExtractContent: () -> Unit,
+    onGoToExtractFileDataActivity: () -> Unit,
     onPermissionGranted: () -> Unit,
     onDownloadFileClick: () -> Unit
 ) {
@@ -177,7 +176,7 @@ fun MainScreenContent(
                                 .padding(top = 3.dp),
                             style = FixedTextStyle(16.sp),
                             textAlign = TextAlign.Center,
-                            text = stringResource(R.string.app_name)
+                            text = stringResource(R.string.contact)
                         )
 
                         if (isPermissionGranted) {
@@ -242,7 +241,7 @@ fun MainScreenContent(
                             FloatingActionButton(
                                 modifier = Modifier
                                     .padding(18.dp),
-                                onClick = { onNavigateToExtractContent() },
+                                onClick = { onGoToExtractFileDataActivity() },
                                 containerColor = AppTheme,
                                 contentColor = Color.White,
                                 shape = CircleShape
@@ -367,7 +366,7 @@ fun MainScreenPreview() {
             ),
             uiState = UiState.Loading,
             onNavigateToSetting = {},
-            onNavigateToExtractContent = {},
+            onGoToExtractFileDataActivity = {},
             onPermissionGranted = {},
             onDownloadFileClick = {}
         )
