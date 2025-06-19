@@ -1,7 +1,7 @@
 package com.canbe.phoneguard.ui.model
 
 import android.net.Uri
-import com.canbe.phoneguard.data.contact.ContactDto
+import com.canbe.phoneguard.data.model.ContactDto
 
 data class ContactUiModel(
     val id: String,

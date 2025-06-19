@@ -1,6 +1,7 @@
 package com.canbe.phoneguard.data.contact
 
-import com.canbe.phoneguard.domain.contact.ContactEntity
+import com.canbe.phoneguard.data.model.toEntity
+import com.canbe.phoneguard.domain.model.ContactEntity
 import com.canbe.phoneguard.domain.contact.ContactRepository
 import javax.inject.Inject
 

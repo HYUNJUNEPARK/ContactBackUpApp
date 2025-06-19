@@ -1,5 +1,6 @@
 package com.canbe.phoneguard.domain.contact
 
+import com.canbe.phoneguard.domain.model.toUiModel
 import com.canbe.phoneguard.ui.model.ContactUiModel
 import javax.inject.Inject
 
