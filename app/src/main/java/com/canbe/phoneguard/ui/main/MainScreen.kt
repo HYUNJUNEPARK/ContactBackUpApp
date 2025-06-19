@@ -8,12 +8,15 @@ import android.net.Uri
 import android.provider.Settings
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -21,15 +24,12 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
@@ -44,10 +44,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.nestedScroll
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
@@ -59,19 +57,19 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.content.ContextCompat
 import androidx.hilt.navigation.compose.hiltViewModel
-import coil.compose.rememberAsyncImagePainter
 import com.canbe.phoneguard.R
 import com.canbe.phoneguard.ui.dialog.CustomDialog
 import com.canbe.phoneguard.ui.model.ContactUiModel
 import com.canbe.phoneguard.ui.model.DialogEvent
 import com.canbe.phoneguard.ui.model.UiEvent
 import com.canbe.phoneguard.ui.model.UiState
-import com.canbe.phoneguard.ui.theme.AppTheme
 import com.canbe.phoneguard.ui.theme.ButtonDefaultColors
 import com.canbe.phoneguard.ui.theme.ContactItem
 import com.canbe.phoneguard.ui.theme.FixedTextStyle
+import com.canbe.phoneguard.ui.theme.Mint
+import com.canbe.phoneguard.ui.theme.Orange
 import com.canbe.phoneguard.ui.theme.PhoneGuardTheme
-import com.canbe.phoneguard.ui.theme.backColors
+import com.canbe.phoneguard.ui.theme.PurpleLight
 import timber.log.Timber
 
 @Composable
@@ -114,9 +112,9 @@ fun MainScreen(
         contactList = contactList.value,
         uiState = uiState,
         onNavigateToSetting = onNavigateToSetting,
-        onGoToExtractFileDataActivity = onGoToExtractFileDataActivity,
         onPermissionGranted = { viewModel.getContacts() },
-        onDownloadFileClick = { viewModel.exportToFile() }
+        onExportFileClick = { viewModel.exportToFile() },
+        onGoToExtractFileDataActivity = onGoToExtractFileDataActivity
     )
 }
 
@@ -126,9 +124,9 @@ fun MainScreenContent(
     contactList: List<ContactUiModel>,
     uiState: UiState,
     onNavigateToSetting: () -> Unit,
-    onGoToExtractFileDataActivity: () -> Unit,
     onPermissionGranted: () -> Unit,
-    onDownloadFileClick: () -> Unit
+    onExportFileClick: () -> Unit,
+    onGoToExtractFileDataActivity: () -> Unit
 ) {
     val context = LocalContext.current
 
@@ -235,42 +233,10 @@ fun MainScreenContent(
                             }
                         }
 
-                        Column(
-                            modifier = Modifier.align(Alignment.BottomEnd)
-                        ) {
-
-                            FloatingActionButton(
-                                modifier = Modifier
-                                    .padding(18.dp),
-                                onClick = { onGoToExtractFileDataActivity() },
-                                containerColor = AppTheme,
-                                contentColor = Color.White,
-                                shape = CircleShape
-                            ) {
-                                Image(
-                                    painter = painterResource(R.drawable.ic_launcher_background),
-                                    contentDescription = "파일 다운로드",
-                                    modifier = Modifier.size(32.dp)
-                                )
-                            }
-
-
-                            FloatingActionButton(
-                                modifier = Modifier
-                                    .padding(18.dp),
-                                    //.align(Alignment.BottomEnd),
-                                onClick = { onDownloadFileClick() },
-                                containerColor = AppTheme,
-                                contentColor = Color.White,
-                                shape = CircleShape
-                            ) {
-                                Image(
-                                    painter = painterResource(R.drawable.ic_file_download_24),
-                                    contentDescription = "파일 다운로드",
-                                    modifier = Modifier.size(32.dp)
-                                )
-                            }
-                        }
+                        FabButton(
+                            onExportButtonClick = { onExportFileClick() },
+                            onExtractFileDataButtonClick = { onGoToExtractFileDataActivity() }
+                        )
                     }
                 } else {
                     //권한이 없는 경우
@@ -300,6 +266,106 @@ fun MainScreenContent(
     )
 }
 
+@Composable
+fun FabButton(
+    onExportButtonClick: () -> Unit,
+    onExtractFileDataButtonClick: () -> Unit
+) {
+    var expanded by remember { mutableStateOf(false) }
+
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(16.dp),
+        contentAlignment = Alignment.BottomEnd
+    ) {
+        //버튼 1
+        AnimatedVisibility(
+            visible = expanded, //expanded true 인 경우만 보임
+            enter = fadeIn() + slideInVertically { it }, //아래 -> 위 등장
+            exit = fadeOut() + slideOutVertically { it } //위 -> 아래 사라짐
+        ) {
+            FloatingActionButton(
+                onClick = { onExportButtonClick() },
+                modifier = Modifier
+                    .padding(bottom = 170.dp)
+                    .size(68.dp),
+                containerColor = PurpleLight
+            ) {
+                Column(
+                    Modifier.padding(3.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Center
+                ) {
+                    Image(
+                        painter = painterResource(R.drawable.ic_outline_file_download_24),
+                        contentDescription = "FAB Button: Export File",
+                        modifier = Modifier.size(32.dp)
+                    )
+                    Text(
+                        modifier = Modifier
+                            .padding(vertical = 3.dp),
+                        style = FixedTextStyle(8.sp),
+                        textAlign = TextAlign.Center,
+                        text = "파일로\n내보내기",
+                        color = Color.White,
+                        fontWeight = FontWeight.Bold
+                    )
+                }
+            }
+        }
+
+        // 버튼 2
+        AnimatedVisibility(
+            visible = expanded,
+            enter = fadeIn() + slideInVertically { it / 2 },
+            exit = fadeOut() + slideOutVertically { it / 2 }
+        ) {
+            FloatingActionButton(
+                onClick = { onExtractFileDataButtonClick() },
+                modifier = Modifier
+                    .padding(bottom = 90.dp)
+                    .size(68.dp),
+                containerColor = Mint
+            ) {
+                Column(
+                    Modifier.padding(3.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Center
+                ) {
+                    Image(
+                        painter = painterResource(R.drawable.ic_outline_file_upload_24),
+                        contentDescription = "FAB Button: Export File",
+                        modifier = Modifier.size(32.dp)
+                    )
+                    Text(
+                        modifier = Modifier
+                            .padding(vertical = 3.dp),
+                        style = FixedTextStyle(8.sp),
+                        textAlign = TextAlign.Center,
+                        text = "연락처 복원",
+                        color = Color.White,
+                        fontWeight = FontWeight.Bold
+                    )
+                }
+            }
+        }
+
+        // 메인 FAB 버튼
+        FloatingActionButton(
+            modifier = Modifier.size(68.dp),
+            onClick = { expanded = !expanded },
+            containerColor = Orange
+        ) {
+            Image(
+                painter = painterResource(R.drawable.ic_import_export_24),
+                contentDescription = "FAB Button: Export File",
+                modifier = Modifier.size(42.dp)
+            )
+        }
+    }
+}
+
 @Preview(showBackground = true)
 @Composable
 fun MainScreenPreview() {
@@ -315,7 +381,7 @@ fun MainScreenPreview() {
             onNavigateToSetting = {},
             onGoToExtractFileDataActivity = {},
             onPermissionGranted = {},
-            onDownloadFileClick = {}
+            onExportFileClick = {}
         )
     }
 }

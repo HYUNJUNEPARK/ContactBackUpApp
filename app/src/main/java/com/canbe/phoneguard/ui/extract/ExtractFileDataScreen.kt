@@ -130,7 +130,7 @@ fun ExtractFileDataScreenContent(
                             shape = CircleShape
                         ) {
                             Image(
-                                painter = painterResource(R.drawable.ic_file_download_24),
+                                painter = painterResource(R.drawable.ic_outline_file_download_24),
                                 contentDescription = "파일 다운로드",
                                 modifier = Modifier.size(32.dp)
                             )
