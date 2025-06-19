@@ -7,6 +7,7 @@ import com.canbe.phoneguard.ui.model.UiEvent
 import com.canbe.phoneguard.ui.model.UiState
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharedFlow
+import timber.log.Timber
 
 open class BaseViewModel: ViewModel() {
     private val _uiState = mutableStateOf<UiState>(UiState.Loading)
@@ -16,10 +17,12 @@ open class BaseViewModel: ViewModel() {
     val uiEvent: SharedFlow<UiEvent> = _uiEvent
 
     fun updateUiState(uiState: UiState) {
+        Timber.d("updateUiState() $uiState")
         _uiState.value = uiState
     }
 
     suspend fun updateUiEvent(uiEvent: UiEvent) {
+        Timber.d("updateUiEvent() $uiEvent")
         _uiEvent.emit(uiEvent)
     }
 }

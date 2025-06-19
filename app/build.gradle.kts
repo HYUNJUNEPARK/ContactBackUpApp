@@ -58,16 +58,16 @@ dependencies {
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
-    //rememberNavController()
-    implementation("androidx.navigation:navigation-compose:2.9.0")
+    // Compose navigation: rememberNavController()
+    implementation(libs.androidx.navigation.compose)
     // Hilt
-    implementation("com.google.dagger:hilt-android:2.51.1")
-    kapt("com.google.dagger:hilt-compiler:2.51.1")
-    implementation("androidx.hilt:hilt-navigation-compose:1.2.0")
+    implementation(libs.hilt.android)
+    kapt(libs.hilt.compiler)
+    implementation(libs.androidx.hilt.navigation.compose)
     // Timber
-    implementation("com.jakewharton.timber:timber:5.0.1")
+    implementation(libs.timber)
     // Coil
-    implementation("io.coil-kt:coil-compose:2.5.0")
+    implementation(libs.coil.compose)
     // Gson
-    implementation("com.google.code.gson:gson:2.13.1")
+    implementation(libs.gson)
 }

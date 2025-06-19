@@ -70,7 +70,7 @@ class ExtractFileDataViewModel @Inject constructor(
                                 ContactsContract.Data.MIMETYPE,
                                 ContactsContract.CommonDataKinds.StructuredName.CONTENT_ITEM_TYPE
                             )
-                            .withValue(ContactsContract.CommonDataKinds.StructuredName.DISPLAY_NAME, it)
+                            .withValue(ContactsContract.CommonDataKinds.StructuredName.DISPLAY_NAME, "${it}_NEW")
                             .build()
                     )
                 }
@@ -148,5 +148,4 @@ class ExtractFileDataViewModel @Inject constructor(
             }
         }
     }
-
 }

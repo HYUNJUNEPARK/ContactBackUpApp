@@ -33,7 +33,7 @@ class MainViewModel @Inject constructor(
         updateUiState(UiState.Success)
     }
 
-    fun exportToFile() = viewModelScope.launch(Dispatchers.IO) {
+    fun exportToFile(fileName: String) = viewModelScope.launch(Dispatchers.IO) {
         Timber.d("exportToFile(): ${contactList.value}")
         if (contactList.value.isEmpty()) {
             Timber.e("exportToFile() contactList is empty")
@@ -41,7 +41,7 @@ class MainViewModel @Inject constructor(
         }
         updateUiState(UiState.Loading)
 
-        exportFileUseCase(contactList.value)
+        exportFileUseCase(fileName, contactList.value)
 
         updateUiState(UiState.Success)
         updateUiEvent(UiEvent.ShowSuccessDialog(DialogEvent.EXPORT))

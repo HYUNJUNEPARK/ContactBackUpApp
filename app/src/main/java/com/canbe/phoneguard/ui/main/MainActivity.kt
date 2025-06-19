@@ -3,13 +3,13 @@ package com.canbe.phoneguard.ui.main
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
-import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.runtime.Composable
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.canbe.phoneguard.ui.base.BaseActivity
 import com.canbe.phoneguard.ui.extract.ExtractFileDataActivity
 import com.canbe.phoneguard.ui.theme.PhoneGuardTheme
 import dagger.hilt.android.AndroidEntryPoint
@@ -19,10 +19,9 @@ enum class MainScreenType {
 }
 
 @AndroidEntryPoint
-class MainActivity : ComponentActivity() {
+class MainActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         enableEdgeToEdge()
         setContent {
             PhoneGuardTheme {

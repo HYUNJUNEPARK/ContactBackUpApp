@@ -113,7 +113,7 @@ fun MainScreen(
         uiState = uiState,
         onNavigateToSetting = onNavigateToSetting,
         onPermissionGranted = { viewModel.getContacts() },
-        onExportFileClick = { viewModel.exportToFile() },
+        onExportFileClick = { viewModel.exportToFile("PHONE_NUMBER_BACKUP_${System.currentTimeMillis()}.json") },
         onGoToExtractFileDataActivity = onGoToExtractFileDataActivity
     )
 }
@@ -129,22 +129,28 @@ fun MainScreenContent(
     onGoToExtractFileDataActivity: () -> Unit
 ) {
     val context = LocalContext.current
-
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
 
     var isPermissionGranted by remember { mutableStateOf(false) }
-    val permission = Manifest.permission.READ_CONTACTS
 
-    val permissionLauncher = rememberLauncherForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
-        isPermissionGranted = isGranted
-        Timber.d("LauncherForActivityResult() isPermissionGranted($isGranted)")
-        if (isGranted) onPermissionGranted()
+    val permission = listOf(Manifest.permission.READ_CONTACTS, Manifest.permission.WRITE_CONTACTS)
+    val permissionLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.RequestMultiplePermissions()
+    ) { permissions ->
+        val grantedPermissions = permissions.filter { it.value }
+        val notGrantedPermissions = permissions.filter { !it.value }
+        Timber.d("grantedPermissions($grantedPermissions), notGrantedPermissions($notGrantedPermissions)")
+
+        //메인 화면에서 꼭 필요한 권한만 있으면 동작
+        isPermissionGranted = grantedPermissions.contains(Manifest.permission.READ_CONTACTS)
+
+        if (isPermissionGranted) onPermissionGranted()
     }
 
     //최초 1회만 권한 확인
     LaunchedEffect(Unit) {
-        //권한 확인
-        isPermissionGranted = (ContextCompat.checkSelfPermission(context, permission) == PackageManager.PERMISSION_GRANTED)
+        //연락처 읽기 권한 확인
+        isPermissionGranted = (ContextCompat.checkSelfPermission(context, Manifest.permission.READ_CONTACTS) == PackageManager.PERMISSION_GRANTED)
 
         if (isPermissionGranted) {
             //권한이 허용 되었을 때
@@ -153,7 +159,7 @@ fun MainScreenContent(
         } else {
             //권한 허용이 되지 않았을 때, 권한 요청
             Timber.d("LaunchedEffect(), 권한 미허용 -> 권한 요청")
-            permissionLauncher.launch(permission)
+            permissionLauncher.launch(permission.toTypedArray())
         }
     }
 

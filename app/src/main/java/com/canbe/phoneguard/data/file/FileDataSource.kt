@@ -25,8 +25,8 @@ class FileDataSource @Inject constructor(
      */
     fun exportToFile(
         fileName: String = "PHONE_NUMBER_BACKUP_${System.currentTimeMillis()}.json",
-        directory: String = Environment.DIRECTORY_DOWNLOADS,
-        fileContent: String
+        fileContent: String,
+        directory: String = Environment.DIRECTORY_DOWNLOADS
     ) {
         Timber.d("saveToDownloads() $fileContent")
 
