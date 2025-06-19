@@ -6,7 +6,7 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 
-val AppTheme = Color(0xFF2F6F5B)
+val AppTheme = Color(0xFFBB86FC) //Color(0xFF2F6F5B)
 
 val Mint = Color(0xFF03DAC5)
 val Orange = Color(0xFFFF5722)
