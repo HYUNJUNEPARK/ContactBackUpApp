@@ -58,7 +58,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.content.ContextCompat
-import androidx.hilt.navigation.compose.hiltViewModel
 import com.canbe.contactbackup.R
 import com.canbe.contactbackup.ui.dialog.CustomDefaultDialog
 import com.canbe.contactbackup.ui.model.ContactUiModel
@@ -66,11 +65,11 @@ import com.canbe.contactbackup.ui.model.EventType
 import com.canbe.contactbackup.ui.model.UiEvent
 import com.canbe.contactbackup.ui.model.UiState
 import com.canbe.contactbackup.ui.theme.ButtonDefaultColors
+import com.canbe.contactbackup.ui.theme.ContactBackupTheme
 import com.canbe.contactbackup.ui.theme.ContactItem
 import com.canbe.contactbackup.ui.theme.FixedTextStyle
 import com.canbe.contactbackup.ui.theme.Mint
 import com.canbe.contactbackup.ui.theme.Orange
-import com.canbe.contactbackup.ui.theme.ContactBackupTheme
 import com.canbe.contactbackup.ui.theme.PurpleLight
 import timber.log.Timber
 import java.text.SimpleDateFormat
@@ -81,9 +80,10 @@ import java.util.Locale
 
 @Composable
 fun MainScreen(
-    viewModel: MainViewModel = hiltViewModel(),
-    onNavigateToSetting: () -> Unit,
-    onGoToExtractFileDataActivity: () -> Unit
+    viewModel: MainViewModel,
+    onStartSettingActivity: () -> Unit,
+    onStartExtractFileDataActivity: () -> Unit,
+    onNavigationToContactDetail: (ContactUiModel) -> Unit,
 ) {
     val context = LocalContext.current
 
@@ -120,10 +120,10 @@ fun MainScreen(
             //권한이 허용 되었을 때 -> 연락처 가져오기
             Timber.d("LaunchedEffect(), 권한 허용")
 
-            //TODO 코드 수정 체크: LaunchedEffect 밖으로
-            if (hasLaunched.value) return@LaunchedEffect
-            viewModel.getContacts()
-            hasLaunched.value = true
+            if (!hasLaunched.value) {
+                viewModel.getContacts()
+                hasLaunched.value = true
+            }
         } else {
             //권한 허용이 되지 않았을 때, 권한 요청
             Timber.d("LaunchedEffect(), 권한 미허용 -> 권한 요청")
@@ -167,10 +167,10 @@ fun MainScreen(
                             onDismissRequest = { pendingUiEvent = null },
                         )
                     }
-                    else -> {}
+                    else -> Timber.e("Not Handling this eventType: ${event.eventType}")
                 }
             }
-            else -> {}
+            else -> Timber.e("Not Handling this eventType: $event")
         }
     }
 
@@ -178,9 +178,10 @@ fun MainScreen(
         contactList = contactList.value,
         uiState = uiState,
         isPermissionGranted = isPermissionGranted,
-        onNavigateToSetting = onNavigateToSetting,
+        onNavigateToSetting = onStartSettingActivity,
         onExportFileClick = { viewModel.updateUiEvent(UiEvent.ShowDialog(EventType.EXPORT)) },
-        onGoToExtractFileDataActivity = onGoToExtractFileDataActivity
+        onGoToExtractFileDataActivity = onStartExtractFileDataActivity,
+        onContactItemClick = { onNavigationToContactDetail(it) }
     )
 }
 
@@ -192,7 +193,8 @@ fun MainScreenContent(
     isPermissionGranted: Boolean,
     onNavigateToSetting: () -> Unit,
     onExportFileClick: () -> Unit,
-    onGoToExtractFileDataActivity: () -> Unit
+    onGoToExtractFileDataActivity: () -> Unit,
+    onContactItemClick: (ContactUiModel) -> Unit
 ) {
     val context = LocalContext.current
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
@@ -268,8 +270,8 @@ fun MainScreenContent(
                             modifier = Modifier.fillMaxSize(),
                         ) {
                             items(contactList) { contact ->
-                                ContactItem(contact) { contactUiModel ->
-                                    Toast.makeText(context, "${contactUiModel.name}", Toast.LENGTH_SHORT).show()
+                                ContactItem(contact) {
+                                    onContactItemClick(it)
                                 }
                             }
                         }
@@ -422,7 +424,8 @@ fun MainScreenPreview() {
             isPermissionGranted = true,
             onNavigateToSetting = {},
             onGoToExtractFileDataActivity = {},
-            onExportFileClick = {}
+            onExportFileClick = {},
+            onContactItemClick = {}
         )
     }
 }

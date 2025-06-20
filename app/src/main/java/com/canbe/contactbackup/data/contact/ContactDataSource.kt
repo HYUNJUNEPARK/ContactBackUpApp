@@ -104,7 +104,7 @@ class ContactDataSource @Inject constructor(
             }
         }
 
-        Timber.i("getContacts(): $contactList")
+        //Timber.i("getContacts(): $contactList")
         return contactList
     }
 }

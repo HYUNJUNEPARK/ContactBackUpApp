@@ -14,22 +14,45 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.sp
-import com.canbe.contactbackup.R
 import com.canbe.contactbackup.ui.theme.ContactBackupTheme
+import timber.log.Timber
+
+@Composable
+fun ContactDetailScreen(
+    viewModel: MainViewModel,
+    onBack: () -> Unit
+) {
+    val selectContact = viewModel.selectedContact
+    Timber.e("testLog $selectContact")
+
+    // Screen이 사라질 때 초기화
+    DisposableEffect(Unit) {
+        onDispose {
+            viewModel.clearSelectContact()
+        }
+    }
+
+    ContactDetailScreenContent(
+        onBack = onBack,
+
+    )
+}
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SettingScreen(onBack: () -> Unit) {
+fun ContactDetailScreenContent(
+    onBack: () -> Unit
+) {
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(
                 title = {
-                    Text(text = stringResource(R.string.setting), fontSize = 16.sp)
+                    Text(text = "", fontSize = 16.sp)
                 },
                 navigationIcon = {
                     IconButton(onClick = onBack) {
@@ -63,6 +86,8 @@ fun SettingScreen(onBack: () -> Unit) {
 @Composable
 fun SettingScreenPreview() {
     ContactBackupTheme {
-        SettingScreen({})
+        ContactDetailScreenContent(
+            onBack = {}
+        )
     }
 }
