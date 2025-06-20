@@ -1,6 +1,5 @@
 package com.canbe.contactbackup.ui.main
 
-
 import android.Manifest
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -43,6 +42,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -93,7 +93,43 @@ fun MainScreen(
 
     var pendingUiEvent by remember { mutableStateOf<UiEvent?>(null) }
 
+    var isPermissionGranted by remember { mutableStateOf(false) }
+
+    val hasLaunched = rememberSaveable { mutableStateOf(false) }
+
+    val permission = listOf(Manifest.permission.READ_CONTACTS, Manifest.permission.WRITE_CONTACTS)
+    val permissionLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.RequestMultiplePermissions()
+    ) { permissions ->
+        val grantedPermissions = permissions.filter { it.value }
+        val notGrantedPermissions = permissions.filter { !it.value }
+        Timber.d("grantedPermissions($grantedPermissions), notGrantedPermissions($notGrantedPermissions)")
+
+        //메인 화면에서 꼭 필요한 권한만 있으면 동작
+        isPermissionGranted = grantedPermissions.contains(Manifest.permission.READ_CONTACTS)
+
+        //권한이 있다면 연락처 가져오기
+        if (isPermissionGranted) viewModel.getContacts()
+    }
+
     LaunchedEffect(Unit) {
+        //연락처 읽기 권한 확인
+        isPermissionGranted = (ContextCompat.checkSelfPermission(context, Manifest.permission.READ_CONTACTS) == PackageManager.PERMISSION_GRANTED)
+
+        if (isPermissionGranted) {
+            //권한이 허용 되었을 때 -> 연락처 가져오기
+            Timber.d("LaunchedEffect(), 권한 허용")
+
+            //TODO 코드 수정 체크: LaunchedEffect 밖으로
+            if (hasLaunched.value) return@LaunchedEffect
+            viewModel.getContacts()
+            hasLaunched.value = true
+        } else {
+            //권한 허용이 되지 않았을 때, 권한 요청
+            Timber.d("LaunchedEffect(), 권한 미허용 -> 권한 요청")
+            permissionLauncher.launch(permission.toTypedArray())
+        }
+
         viewModel.uiEvent.collect { uiEvent ->
             when(uiEvent) {
                 is UiEvent.ShowDialog -> { pendingUiEvent = uiEvent }
@@ -141,8 +177,8 @@ fun MainScreen(
     MainScreenContent(
         contactList = contactList.value,
         uiState = uiState,
+        isPermissionGranted = isPermissionGranted,
         onNavigateToSetting = onNavigateToSetting,
-        onPermissionGranted = { viewModel.getContacts() },
         onExportFileClick = { viewModel.updateUiEvent(UiEvent.ShowDialog(EventType.EXPORT)) },
         onGoToExtractFileDataActivity = onGoToExtractFileDataActivity
     )
@@ -153,47 +189,14 @@ fun MainScreen(
 fun MainScreenContent(
     contactList: List<ContactUiModel>,
     uiState: UiState,
+    isPermissionGranted: Boolean,
     onNavigateToSetting: () -> Unit,
-    onPermissionGranted: () -> Unit,
     onExportFileClick: () -> Unit,
     onGoToExtractFileDataActivity: () -> Unit
 ) {
     val context = LocalContext.current
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
 
-    var isPermissionGranted by remember { mutableStateOf(false) }
-
-    val permission = listOf(Manifest.permission.READ_CONTACTS, Manifest.permission.WRITE_CONTACTS)
-    val permissionLauncher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.RequestMultiplePermissions()
-    ) { permissions ->
-        val grantedPermissions = permissions.filter { it.value }
-        val notGrantedPermissions = permissions.filter { !it.value }
-        Timber.d("grantedPermissions($grantedPermissions), notGrantedPermissions($notGrantedPermissions)")
-
-        //메인 화면에서 꼭 필요한 권한만 있으면 동작
-        isPermissionGranted = grantedPermissions.contains(Manifest.permission.READ_CONTACTS)
-
-        if (isPermissionGranted) onPermissionGranted()
-    }
-
-    //최초 1회만 권한 확인
-    LaunchedEffect(Unit) {
-        //연락처 읽기 권한 확인
-        isPermissionGranted = (ContextCompat.checkSelfPermission(context, Manifest.permission.READ_CONTACTS) == PackageManager.PERMISSION_GRANTED)
-
-        if (isPermissionGranted) {
-            //권한이 허용 되었을 때
-            Timber.d("LaunchedEffect(), 권한 허용")
-            onPermissionGranted()
-        } else {
-            //권한 허용이 되지 않았을 때, 권한 요청
-            Timber.d("LaunchedEffect(), 권한 미허용 -> 권한 요청")
-            permissionLauncher.launch(permission.toTypedArray())
-        }
-    }
-
-    //UI
     Scaffold(
         modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
         topBar = {
@@ -416,9 +419,9 @@ fun MainScreenPreview() {
                 ContactUiModel("1", "12", listOf("01010100101"), listOf("audzxcv"), "asdf", "", null),
             ),
             uiState = UiState.Loading,
+            isPermissionGranted = true,
             onNavigateToSetting = {},
             onGoToExtractFileDataActivity = {},
-            onPermissionGranted = {},
             onExportFileClick = {}
         )
     }
