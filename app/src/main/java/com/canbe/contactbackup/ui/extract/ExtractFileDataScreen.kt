@@ -39,7 +39,7 @@ import com.canbe.contactbackup.R
 import com.canbe.contactbackup.ui.model.ContactUiModel
 import com.canbe.contactbackup.ui.model.UiState
 import com.canbe.contactbackup.ui.theme.ContactItem
-import com.canbe.contactbackup.ui.theme.CustomStyledButton
+import com.canbe.contactbackup.ui.theme.CustomDefaultButton
 import com.canbe.contactbackup.ui.theme.FixedTextStyle
 import com.canbe.contactbackup.ui.theme.Mint
 import com.canbe.contactbackup.ui.theme.ContactBackupTheme
@@ -49,11 +49,9 @@ fun ExtractFileDataScreen(
     viewModel: ExtractFileDataViewModel = hiltViewModel(),
     onBack: () -> Unit
 ) {
-    val contactList = viewModel.contactList
-
-    val uiState by viewModel.uiState
-
     val context = LocalContext.current
+    val contactList = viewModel.contactList
+    val uiState by viewModel.uiState
 
     ExtractFileDataScreenContent(
         onBack = onBack,
@@ -106,7 +104,7 @@ fun ExtractFileDataScreenContent(
             ) {
                 if (contactList.isEmpty()) {
                     //복원 가능한 연락처가 없는 경우
-                    CustomStyledButton(
+                    CustomDefaultButton(
                         text = stringResource(R.string.select_contact_file),
                         buttonColor = Mint
                     ) {
@@ -120,7 +118,7 @@ fun ExtractFileDataScreenContent(
                             modifier = Modifier.fillMaxSize(),
                         ) {
                             items(contactList) { contact ->
-                                ContactItem(contact) { contactUiModel ->
+                                ContactItem(contact) { //contactUiModel ->
 
                                 }
                             }
@@ -155,23 +153,6 @@ fun ExtractFileDataScreenContent(
                                 )
                             }
                         }
-
-
-//                        FloatingActionButton(
-//                            modifier = Modifier
-//                                .padding(18.dp)
-//                                .align(Alignment.BottomEnd),
-//                            onClick = { onBackUpButtonClick() },
-//                            containerColor = AppTheme,
-//                            contentColor = Color.White,
-//                            shape = CircleShape
-//                        ) {
-//                            Image(
-//                                painter = painterResource(R.drawable.ic_outline_file_download_24),
-//                                contentDescription = "파일 다운로드",
-//                                modifier = Modifier.size(32.dp)
-//                            )
-//                        }
                     }
                 }
             }

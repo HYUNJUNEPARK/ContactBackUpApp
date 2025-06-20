@@ -33,7 +33,7 @@ import coil.compose.rememberAsyncImagePainter
 import com.canbe.contactbackup.ui.model.ContactUiModel
 
 @Composable
-fun CustomStyledButton(
+fun CustomDefaultButton(
     text: String,
     buttonColor: Color = AppTheme,
     onClick: () -> Unit
@@ -112,6 +112,12 @@ fun ContactItem(
             }
         }
     }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun CustomStyledButtonPreview() {
+    CustomDefaultButton("Default Button") {}
 }
 
 @Preview(showBackground = true)

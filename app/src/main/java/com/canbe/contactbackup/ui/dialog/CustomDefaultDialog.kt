@@ -19,7 +19,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
-import com.canbe.contactbackup.ui.theme.CustomStyledButton
+import com.canbe.contactbackup.ui.theme.CustomDefaultButton
 
 @Composable
 fun CustomDefaultDialog(
@@ -36,7 +36,7 @@ fun CustomDefaultDialog(
         Box(
             modifier = Modifier
                 .width(300.dp)
-                .background(Color.White, shape = RoundedCornerShape(16.dp))
+                .background(Color.White, shape = RoundedCornerShape(8.dp))
                 .padding(16.dp)
         ) {
             Column(
@@ -57,12 +57,12 @@ fun CustomDefaultDialog(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.spacedBy(16.dp, Alignment.CenterHorizontally)
                 ) {
-                    CustomStyledButton(leftButtonText) {
+                    CustomDefaultButton(leftButtonText) {
                         onLeftButtonRequest()
                     }
 
                     if(isRightButtonVisible) {
-                        CustomStyledButton(rightButtonText) {
+                        CustomDefaultButton(rightButtonText) {
                             onRightButtonRequest()
                         }
                     }

@@ -1,6 +1,7 @@
 package com.canbe.contactbackup.ui.main
 
 import android.Manifest
+import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
@@ -90,14 +91,11 @@ fun MainScreen(
     val contactList = viewModel.contactList
 
     val uiState by viewModel.uiState
-
     var pendingUiEvent by remember { mutableStateOf<UiEvent?>(null) }
-
-    var isPermissionGranted by remember { mutableStateOf(false) }
-
     val hasLaunched = rememberSaveable { mutableStateOf(false) }
 
-    val permission = listOf(Manifest.permission.READ_CONTACTS, Manifest.permission.WRITE_CONTACTS)
+    var isPermissionGranted by remember { mutableStateOf(false) }
+    val permissionList = listOf(Manifest.permission.READ_CONTACTS, Manifest.permission.WRITE_CONTACTS)
     val permissionLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.RequestMultiplePermissions()
     ) { permissions ->
@@ -127,7 +125,7 @@ fun MainScreen(
         } else {
             //권한 허용이 되지 않았을 때, 권한 요청
             Timber.d("LaunchedEffect(), 권한 미허용 -> 권한 요청")
-            permissionLauncher.launch(permission.toTypedArray())
+            permissionLauncher.launch(permissionList.toTypedArray())
         }
 
         viewModel.uiEvent.collect { uiEvent ->
@@ -175,6 +173,7 @@ fun MainScreen(
     }
 
     MainScreenContent(
+        context = context,
         contactList = contactList.value,
         uiState = uiState,
         isPermissionGranted = isPermissionGranted,
@@ -188,6 +187,7 @@ fun MainScreen(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MainScreenContent(
+    context: Context,
     contactList: List<ContactUiModel>,
     uiState: UiState,
     isPermissionGranted: Boolean,
@@ -196,7 +196,6 @@ fun MainScreenContent(
     onGoToExtractFileDataActivity: () -> Unit,
     onContactItemClick: (ContactUiModel) -> Unit
 ) {
-    val context = LocalContext.current
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
 
     Scaffold(
@@ -412,8 +411,11 @@ fun FabButton(
 @Preview(showBackground = true)
 @Composable
 fun MainScreenPreview() {
+    val context = LocalContext.current
+
     ContactBackupTheme {
         MainScreenContent(
+            context = context,
             contactList = listOf(
                 ContactUiModel("1", "12", listOf("01010100101"), listOf("audzxcv"), "asdf", "", null),
                 ContactUiModel("1", "12", listOf("01010100101"), listOf("audzxcv"), "asdf", "", null),
