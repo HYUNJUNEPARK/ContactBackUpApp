@@ -19,6 +19,6 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "PhoneGuard"
+rootProject.name = "ContactBackup"
 include(":app")
  

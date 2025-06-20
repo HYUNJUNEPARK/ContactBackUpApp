@@ -7,11 +7,11 @@ plugins {
 }
 
 android {
-    namespace = "com.canbe.phoneguard"
+    namespace = "com.canbe.contactbackup"
     compileSdk = 35
 
     defaultConfig {
-        applicationId = "com.canbe.phoneguard"
+        applicationId = "com.canbe.contactbackup"
         minSdk = 24
         targetSdk = 35
         versionCode = 250000
