@@ -265,7 +265,9 @@ fun MainScreenContent(
                             modifier = Modifier.fillMaxSize(),
                         ) {
                             items(contactList) { contact ->
-                                ContactItem(contact)
+                                ContactItem(contact) { contactUiModel ->
+                                    Toast.makeText(context, "${contactUiModel.name}", Toast.LENGTH_SHORT).show()
+                                }
                             }
                         }
 

@@ -143,7 +143,6 @@ class ExtractFileDataViewModel @Inject constructor(
                     e.printStackTrace()
                     // 예외 처리 (중복, 권한 없음 등)
                     //Permission Denial: writing com.samsung.android.providers.contacts.SamsungContactsProvider2 uri content://com.android.contacts/raw_contacts from pid=27442, uid=10346 requires android.permission.WRITE_CONTACTS, or grantUriPermission()
-
                 }
             }
         }

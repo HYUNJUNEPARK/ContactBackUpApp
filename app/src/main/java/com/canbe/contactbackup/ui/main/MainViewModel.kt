@@ -44,6 +44,5 @@ class MainViewModel @Inject constructor(
 
         updateUiState(UiState.Success)
         updateUiEvent(UiEvent.ShowToast("연락처를 파일로 저장했습니다."))
-
     }
 }

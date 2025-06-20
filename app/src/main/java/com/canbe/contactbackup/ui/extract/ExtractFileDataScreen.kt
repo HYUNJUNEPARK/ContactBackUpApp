@@ -44,7 +44,6 @@ import com.canbe.contactbackup.ui.theme.FixedTextStyle
 import com.canbe.contactbackup.ui.theme.Mint
 import com.canbe.contactbackup.ui.theme.ContactBackupTheme
 
-
 @Composable
 fun ExtractFileDataScreen(
     viewModel: ExtractFileDataViewModel = hiltViewModel(),
@@ -121,7 +120,9 @@ fun ExtractFileDataScreenContent(
                             modifier = Modifier.fillMaxSize(),
                         ) {
                             items(contactList) { contact ->
-                                ContactItem(contact)
+                                ContactItem(contact) { contactUiModel ->
+
+                                }
                             }
                         }
 
