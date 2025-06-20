@@ -7,10 +7,10 @@ sealed class UiState {
 }
 
 sealed class UiEvent {
-    //data object ShowToast : UiEvent()
-    data class ShowSuccessDialog(val event: DialogEvent) : UiEvent()
+    data class ShowToast(val message: String) : UiEvent()
+    data class ShowDialog(val eventType: EventType) : UiEvent()
 }
 
-enum class DialogEvent {
+enum class EventType {
     EXPORT
 }

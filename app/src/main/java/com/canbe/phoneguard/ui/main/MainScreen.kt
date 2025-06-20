@@ -6,6 +6,7 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
 import android.provider.Settings
+import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.AnimatedVisibility
@@ -58,9 +59,9 @@ import androidx.compose.ui.unit.sp
 import androidx.core.content.ContextCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.canbe.phoneguard.R
-import com.canbe.phoneguard.ui.dialog.CustomDialog
+import com.canbe.phoneguard.ui.dialog.CustomDefaultDialog
 import com.canbe.phoneguard.ui.model.ContactUiModel
-import com.canbe.phoneguard.ui.model.DialogEvent
+import com.canbe.phoneguard.ui.model.EventType
 import com.canbe.phoneguard.ui.model.UiEvent
 import com.canbe.phoneguard.ui.model.UiState
 import com.canbe.phoneguard.ui.theme.ButtonDefaultColors
@@ -78,34 +79,47 @@ fun MainScreen(
     onNavigateToSetting: () -> Unit,
     onGoToExtractFileDataActivity: () -> Unit
 ) {
+    val context = LocalContext.current
+
     val contactList = viewModel.contactList
 
     val uiState by viewModel.uiState
 
-    var showDialog: DialogEvent? by remember { mutableStateOf(null) }
+    var pendingUiEvent by remember { mutableStateOf<UiEvent?>(null) }
 
     LaunchedEffect(Unit) {
         viewModel.uiEvent.collect { uiEvent ->
             when(uiEvent) {
-                is UiEvent.ShowSuccessDialog -> showDialog = uiEvent.event
-                else -> { Timber.e("Not handling this uiEvent $uiEvent") }
+                is UiEvent.ShowDialog -> { pendingUiEvent = uiEvent }
+                is UiEvent.ShowToast -> { Toast.makeText(context, uiEvent.message, Toast.LENGTH_SHORT).show() }
             }
         }
     }
 
-    when(showDialog) {
-        DialogEvent.EXPORT -> {
-            CustomDialog(
-                content = "연락처 정보가 파일로 성공적으로 저장되었습니다.\n파일은 [다운로드] 폴더에서 확인할 수 있습니다.",
-                isSingleButton = false,
-                leftButtonText = "닫기",
-                onLeftButtonRequest = { showDialog = null },
-                rightButtonText = "파일 확인하기",
-                onRightButtonRequest = {},
-                onDismissRequest = { showDialog = null }
-            )
+    //UiEvent Handler
+    pendingUiEvent?.let { event ->
+        when (event) {
+            is UiEvent.ShowDialog -> {
+                when (event.eventType) {
+                    EventType.EXPORT -> {
+                        CustomDefaultDialog(
+                            title = stringResource(R.string.export_file_2),
+                            content = "연락처를 파일로 저장합니다.\n생성된 파일은 [다운로드] 폴더에서 확인하세요.",
+                            leftButtonText = stringResource(R.string.close),
+                            onLeftButtonRequest = { pendingUiEvent = null },
+                            rightButtonText = stringResource(R.string.export_file_2),
+                            onRightButtonRequest = {
+                                val filename = "PHONE_NUMBER_BACKUP_${System.currentTimeMillis()}.json"
+                                viewModel.exportToFile(filename)
+                            },
+                            onDismissRequest = { pendingUiEvent = null },
+                        )
+                    }
+                    else -> {}
+                }
+            }
+            else -> {}
         }
-        else -> {}
     }
 
     MainScreenContent(
@@ -113,7 +127,7 @@ fun MainScreen(
         uiState = uiState,
         onNavigateToSetting = onNavigateToSetting,
         onPermissionGranted = { viewModel.getContacts() },
-        onExportFileClick = { viewModel.exportToFile("PHONE_NUMBER_BACKUP_${System.currentTimeMillis()}.json") },
+        onExportFileClick = { viewModel.updateUiEvent(UiEvent.ShowDialog(EventType.EXPORT)) },
         onGoToExtractFileDataActivity = onGoToExtractFileDataActivity
     )
 }
@@ -313,7 +327,7 @@ fun FabButton(
                             .padding(vertical = 3.dp),
                         style = FixedTextStyle(8.sp),
                         textAlign = TextAlign.Center,
-                        text = "파일로\n내보내기",
+                        text = stringResource(R.string.export_file_1),
                         color = Color.White,
                         fontWeight = FontWeight.Bold
                     )
@@ -349,7 +363,7 @@ fun FabButton(
                             .padding(vertical = 3.dp),
                         style = FixedTextStyle(8.sp),
                         textAlign = TextAlign.Center,
-                        text = "연락처 복원",
+                        text = stringResource(R.string.restore_contact),
                         color = Color.White,
                         fontWeight = FontWeight.Bold
                     )

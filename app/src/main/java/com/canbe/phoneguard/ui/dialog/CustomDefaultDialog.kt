@@ -5,9 +5,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -24,10 +22,10 @@ import androidx.compose.ui.window.Dialog
 import com.canbe.phoneguard.ui.theme.CustomStyledButton
 
 @Composable
-fun CustomDialog(
+fun CustomDefaultDialog(
     title: String? = null,
     content: String,
-    isSingleButton: Boolean = true,
+    isRightButtonVisible: Boolean = true,
     leftButtonText: String,
     onLeftButtonRequest: () -> Unit,
     rightButtonText: String,
@@ -63,7 +61,7 @@ fun CustomDialog(
                         onLeftButtonRequest()
                     }
 
-                    if(!isSingleButton) {
+                    if(isRightButtonVisible) {
                         CustomStyledButton(rightButtonText) {
                             onRightButtonRequest()
                         }
@@ -77,10 +75,10 @@ fun CustomDialog(
 @Preview(showBackground = true)
 @Composable
 fun CustomDialogPreview() {
-    CustomDialog(
+    CustomDefaultDialog(
         title = "Title",
         content = "Content",
-        isSingleButton = false,
+        isRightButtonVisible = true,
         leftButtonText = "Left Button",
         rightButtonText = "Right Button",
         onLeftButtonRequest = {},

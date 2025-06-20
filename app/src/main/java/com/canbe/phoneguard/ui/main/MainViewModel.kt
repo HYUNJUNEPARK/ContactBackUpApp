@@ -7,7 +7,7 @@ import com.canbe.phoneguard.domain.contact.GetContactListUseCase
 import com.canbe.phoneguard.domain.file.ExportFileUseCase
 import com.canbe.phoneguard.ui.base.BaseViewModel
 import com.canbe.phoneguard.ui.model.ContactUiModel
-import com.canbe.phoneguard.ui.model.DialogEvent
+import com.canbe.phoneguard.ui.model.EventType
 import com.canbe.phoneguard.ui.model.UiEvent
 import com.canbe.phoneguard.ui.model.UiState
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -44,6 +44,7 @@ class MainViewModel @Inject constructor(
         exportFileUseCase(fileName, contactList.value)
 
         updateUiState(UiState.Success)
-        updateUiEvent(UiEvent.ShowSuccessDialog(DialogEvent.EXPORT))
+        updateUiEvent(UiEvent.ShowToast("연락처를 파일로 저장했습니다."))
+
     }
 }

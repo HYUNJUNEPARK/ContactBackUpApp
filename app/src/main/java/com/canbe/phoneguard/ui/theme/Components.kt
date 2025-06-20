@@ -33,21 +33,21 @@ import com.canbe.phoneguard.ui.model.ContactUiModel
 @Composable
 fun CustomStyledButton(
     text: String,
-    backgroundColor: Color = AppTheme,
+    buttonColor: Color = AppTheme,
     onClick: () -> Unit
 ) {
     Button(
         onClick = onClick,
         shape = RoundedCornerShape(8.dp),
         colors = ButtonDefaults.buttonColors(
-            containerColor = backgroundColor,
+            containerColor = buttonColor,
             contentColor = Color.White
         ),
         elevation = ButtonDefaults.buttonElevation(
             defaultElevation = 8.dp,
             pressedElevation = 12.dp
         ),
-        contentPadding = PaddingValues(horizontal = 22.dp, vertical = 10.dp)
+        contentPadding = PaddingValues(horizontal = 18.dp, vertical = 10.dp)
     ) {
         Text(
             text = text,

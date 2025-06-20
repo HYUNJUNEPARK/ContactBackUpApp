@@ -30,6 +30,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -40,6 +42,8 @@ import com.canbe.phoneguard.ui.model.UiState
 import com.canbe.phoneguard.ui.theme.AppTheme
 import com.canbe.phoneguard.ui.theme.ContactItem
 import com.canbe.phoneguard.ui.theme.CustomStyledButton
+import com.canbe.phoneguard.ui.theme.FixedTextStyle
+import com.canbe.phoneguard.ui.theme.Mint
 import com.canbe.phoneguard.ui.theme.PhoneGuardTheme
 
 
@@ -83,7 +87,7 @@ fun ExtractFileDataScreenContent(
         topBar = {
             CenterAlignedTopAppBar(
                 title = {
-                    Text(text = stringResource(R.string.contact_backup), fontSize = 16.sp)
+                    Text(text = stringResource(R.string.restore_contact), fontSize = 16.sp)
                 },
                 navigationIcon = {
                     IconButton(onClick = onBack) {
@@ -105,7 +109,10 @@ fun ExtractFileDataScreenContent(
             ) {
                 if (contactList.isEmpty()) {
                     //복원 가능한 연락처가 없는 경우
-                    CustomStyledButton("연락처 파일 가져오기") {
+                    CustomStyledButton(
+                        text = stringResource(R.string.select_contact_file),
+                        buttonColor = Mint
+                    ) {
                         launcher.launch(arrayOf("application/json"))
                     }
                 } else {
@@ -123,18 +130,49 @@ fun ExtractFileDataScreenContent(
                         FloatingActionButton(
                             modifier = Modifier
                                 .padding(18.dp)
+                                .size(68.dp)
                                 .align(Alignment.BottomEnd),
-                            onClick = { onBackUpButtonClick() },
-                            containerColor = AppTheme,
-                            contentColor = Color.White,
-                            shape = CircleShape
+                            containerColor = Mint,
+                            onClick = { onBackUpButtonClick() }
                         ) {
-                            Image(
-                                painter = painterResource(R.drawable.ic_outline_file_download_24),
-                                contentDescription = "파일 다운로드",
-                                modifier = Modifier.size(32.dp)
-                            )
+                            Column(
+                                Modifier.padding(3.dp),
+                                horizontalAlignment = Alignment.CenterHorizontally,
+                                verticalArrangement = Arrangement.Center
+                            ) {
+                                Image(
+                                    painter = painterResource(R.drawable.ic_outline_file_upload_24),
+                                    contentDescription = "FAB Button: Export File",
+                                    modifier = Modifier.size(32.dp)
+                                )
+                                Text(
+                                    modifier = Modifier
+                                        .padding(vertical = 3.dp),
+                                    style = FixedTextStyle(8.sp),
+                                    textAlign = TextAlign.Center,
+                                    text = stringResource(R.string.restore_contact),
+                                    color = Color.White,
+                                    fontWeight = FontWeight.Bold
+                                )
+                            }
                         }
+
+
+//                        FloatingActionButton(
+//                            modifier = Modifier
+//                                .padding(18.dp)
+//                                .align(Alignment.BottomEnd),
+//                            onClick = { onBackUpButtonClick() },
+//                            containerColor = AppTheme,
+//                            contentColor = Color.White,
+//                            shape = CircleShape
+//                        ) {
+//                            Image(
+//                                painter = painterResource(R.drawable.ic_outline_file_download_24),
+//                                contentDescription = "파일 다운로드",
+//                                modifier = Modifier.size(32.dp)
+//                            )
+//                        }
                     }
                 }
             }
