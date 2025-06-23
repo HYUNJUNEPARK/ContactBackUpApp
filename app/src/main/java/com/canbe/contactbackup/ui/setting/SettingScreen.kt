@@ -1,9 +1,12 @@
 package com.canbe.contactbackup.ui.setting
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.outlined.ArrowBack
@@ -18,13 +21,21 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.canbe.contactbackup.BuildConfig
 import com.canbe.contactbackup.R
 import com.canbe.contactbackup.ui.theme.ContactBackupTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SettingScreen(onBack: () -> Unit) {
+    val appVersion = if (BuildConfig.DEBUG) {
+        "${BuildConfig.VERSION_NAME}(${BuildConfig.VERSION_CODE})"
+    } else {
+        BuildConfig.VERSION_NAME
+    }
+
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(
@@ -49,11 +60,27 @@ fun SettingScreen(onBack: () -> Unit) {
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center
             ) {
-                Text("This is the Setting Screen1") // 상단 고정
+                Box(
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Text(
+                        modifier = Modifier.padding(20.dp),
+                        text = "개인 정보 처리 방침"
+                    )
+                }
 
-                Spacer(modifier = Modifier.weight(1f)) // 가운데 공간 차지
+                Spacer(modifier = Modifier.weight(1f))
 
-                Text("This is the Setting Screen2") // 하단 고정
+                Row(
+                    modifier = Modifier.fillMaxWidth().padding(20.dp)
+                ) {
+                    Text(text = "앱 버전")
+
+                    Spacer(modifier = Modifier.weight(1f))
+
+                    Text(text = appVersion)
+                }
+
             }
         }
     )

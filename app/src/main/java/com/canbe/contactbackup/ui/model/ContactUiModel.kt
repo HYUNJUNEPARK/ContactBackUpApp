@@ -14,18 +14,6 @@ data class ContactUiModel(
     val profileUri: Uri?
 )
 
-fun ContactUiModel.toDto(): ContactDto {
-    return ContactDto(
-        contactId = id,
-        displayNamePrimary = name,
-        phoneNumbers = numbers,
-        emailAddresses = emails,
-        organizationCompany = organization,
-        notes = note,
-        contactPhotoUri = null
-    )
-}
-
 fun ContactUiModel.toEntity(): ContactEntity {
     return ContactEntity(
         id = id,
@@ -37,3 +25,15 @@ fun ContactUiModel.toEntity(): ContactEntity {
         profileUri = profileUri
     )
 }
+
+//fun ContactUiModel.toDto(): ContactDto {
+//    return ContactDto(
+//        contactId = id,
+//        displayNamePrimary = name,
+//        phoneNumbers = numbers,
+//        emailAddresses = emails,
+//        organizationCompany = organization,
+//        notes = note,
+//        contactPhotoUri = null
+//    )
+//}

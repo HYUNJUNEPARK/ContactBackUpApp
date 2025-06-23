@@ -30,7 +30,7 @@ class FileDataSource @Inject constructor(
         fileContent: String,
         directory: String = Environment.DIRECTORY_DOWNLOADS
     ) {
-        Timber.i("saveToDownloads() $fileContent")
+        Timber.i("exportToFile() $fileContent")
 
         /*
             API 29 이상 : MediaStore 를 사용하여 Download 폴더에 접근
