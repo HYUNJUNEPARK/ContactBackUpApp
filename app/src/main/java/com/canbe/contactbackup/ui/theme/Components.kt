@@ -34,7 +34,7 @@ import com.canbe.contactbackup.ui.model.ContactUiModel
 
 @Composable
 fun CustomDefaultButton(
-    text: String,
+    text: String?,
     buttonColor: Color = AppTheme,
     onClick: () -> Unit
 ) {
@@ -52,7 +52,7 @@ fun CustomDefaultButton(
         contentPadding = PaddingValues(horizontal = 18.dp, vertical = 10.dp)
     ) {
         Text(
-            text = text,
+            text = text ?: "",
             style = FixedTextStyle(14.sp)
         )
     }

@@ -6,6 +6,7 @@ import com.canbe.contactbackup.data.file.FileRepositoryImpl
 import com.canbe.contactbackup.domain.file.ExportFileUseCase
 import com.canbe.contactbackup.domain.file.ExtractFileDataUseCase
 import com.canbe.contactbackup.domain.file.FileRepository
+import com.canbe.contactbackup.domain.file.SaveContactsToDeviceUseCase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -25,4 +26,7 @@ object FileModule {
 
     @Provides
     fun provideExtractDataFromFileUseCase(repository: FileRepository): ExtractFileDataUseCase = ExtractFileDataUseCase(repository)
+
+    @Provides
+    fun provideSaveContactsToDevice(repository: FileRepository): SaveContactsToDeviceUseCase = SaveContactsToDeviceUseCase(repository)
 }

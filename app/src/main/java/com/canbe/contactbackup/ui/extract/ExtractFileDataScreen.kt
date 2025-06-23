@@ -58,7 +58,7 @@ fun ExtractFileDataScreen(
         contactList = contactList.value,
         uiState = uiState,
         onGetFileData = { viewModel.extractFromFile(it) },
-        onBackUpButtonClick = { viewModel.saveDataToDevice(context) }
+        onBackUpButtonClick = { viewModel.saveContactsToDevice() }
     )
 }
 
@@ -111,7 +111,6 @@ fun ExtractFileDataScreenContent(
                         launcher.launch(arrayOf("application/json"))
                     }
                 } else {
-
                     Box(modifier = Modifier.fillMaxSize()) {
                         //복원 가능한 연락처가 있는 경우
                         LazyColumn(

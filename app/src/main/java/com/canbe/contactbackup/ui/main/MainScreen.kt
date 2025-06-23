@@ -60,7 +60,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.content.ContextCompat
 import com.canbe.contactbackup.R
+import com.canbe.contactbackup.exception.convertToErrorMessage
 import com.canbe.contactbackup.ui.dialog.CustomCloseButtonDialog
+import com.canbe.contactbackup.ui.dialog.CustomDefaultDialog
 import com.canbe.contactbackup.ui.model.ContactUiModel
 import com.canbe.contactbackup.ui.model.EventType
 import com.canbe.contactbackup.ui.model.UiEvent
@@ -88,12 +90,18 @@ fun MainScreen(
 ) {
     val context = LocalContext.current
 
+    //연락처 리스트
     val contactList = viewModel.contactList
 
+    //UI 상태: 로딩 중, 완료
     val uiState by viewModel.uiState
+    //UI 이벤트: 다이얼로그, Toast 등 동작
     var pendingUiEvent by remember { mutableStateOf<UiEvent?>(null) }
+
+    //LaunchedEffect 가 한번 실행되면 true 로 변경
     val hasLaunched = rememberSaveable { mutableStateOf(false) }
 
+    //권한 획득 여부
     var isPermissionGranted by remember { mutableStateOf(false) }
     val permissionList = listOf(Manifest.permission.READ_CONTACTS, Manifest.permission.WRITE_CONTACTS)
     val permissionLauncher = rememberLauncherForActivityResult(
@@ -163,7 +171,17 @@ fun MainScreen(
                             onDismissRequest = { pendingUiEvent = null }
                         )
                     }
-                    else -> Timber.e("Not Handling this eventType: ${event.eventType}")
+                    EventType.ERROR -> {
+                        val errorMessage = convertToErrorMessage(event.e)
+
+                        CustomDefaultDialog(
+                            content = errorMessage,
+                            isRightButtonVisible = false,
+                            leftButtonText = stringResource(R.string.confirm),
+                            onLeftButtonRequest = { pendingUiEvent = null },
+                            onDismissRequest = { pendingUiEvent = null }
+                        )
+                    }
                 }
             }
             else -> Timber.e("Not Handling this eventType: $event")
@@ -258,9 +276,6 @@ fun MainScreenContent(
                         when(uiState) {
                             is UiState.Loading -> CircularProgressIndicator(color = colorResource(R.color.appTheme))
                             is UiState.Success -> {}
-                            is UiState.Error -> {
-                                Timber.e("Exception: ${uiState.exception}")
-                            }
                         }
 
                         LazyColumn(

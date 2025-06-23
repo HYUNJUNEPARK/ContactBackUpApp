@@ -2,6 +2,7 @@ package com.canbe.contactbackup.ui.model
 
 import android.net.Uri
 import com.canbe.contactbackup.data.model.ContactDto
+import com.canbe.contactbackup.domain.model.ContactEntity
 
 data class ContactUiModel(
     val id: String,
@@ -22,5 +23,17 @@ fun ContactUiModel.toDto(): ContactDto {
         organizationCompany = organization,
         notes = note,
         contactPhotoUri = null
+    )
+}
+
+fun ContactUiModel.toEntity(): ContactEntity {
+    return ContactEntity(
+        id = id,
+        name = name,
+        numbers = numbers,
+        emails = emails,
+        organization = organization,
+        note = note,
+        profileUri = profileUri
     )
 }

@@ -7,8 +7,10 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.viewModelScope
 import com.canbe.contactbackup.domain.contact.GetContactListUseCase
 import com.canbe.contactbackup.domain.file.ExportFileUseCase
+import com.canbe.contactbackup.exception.NoContactsInDevice
 import com.canbe.contactbackup.ui.base.BaseViewModel
 import com.canbe.contactbackup.ui.model.ContactUiModel
+import com.canbe.contactbackup.ui.model.EventType
 import com.canbe.contactbackup.ui.model.UiEvent
 import com.canbe.contactbackup.ui.model.UiState
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -40,6 +42,7 @@ class MainViewModel @Inject constructor(
         Timber.d("exportToFile(): ${contactList.value}")
         if (contactList.value.isEmpty()) {
             Timber.e("exportToFile() contactList is empty")
+            updateUiEvent(UiEvent.ShowDialog(EventType.ERROR, NoContactsInDevice()))
             return@launch
         }
         updateUiState(UiState.Loading)

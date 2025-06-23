@@ -67,8 +67,6 @@ fun CustomCloseButtonDialog(
                     }
                 }
 
-
-
                 Text(
                     modifier = Modifier.fillMaxWidth().padding(vertical = 22.dp),
                     textAlign = TextAlign.Center,

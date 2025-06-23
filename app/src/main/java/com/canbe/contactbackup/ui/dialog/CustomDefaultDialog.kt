@@ -28,8 +28,8 @@ fun CustomDefaultDialog(
     isRightButtonVisible: Boolean = true,
     leftButtonText: String,
     onLeftButtonRequest: () -> Unit,
-    rightButtonText: String,
-    onRightButtonRequest: () -> Unit,
+    rightButtonText: String? = null,
+    onRightButtonRequest: (() -> Unit)? = null,
     onDismissRequest: () -> Unit
 ) {
     Dialog(onDismissRequest = onDismissRequest) {
@@ -63,7 +63,7 @@ fun CustomDefaultDialog(
 
                     if(isRightButtonVisible) {
                         CustomDefaultButton(rightButtonText) {
-                            onRightButtonRequest()
+                            onRightButtonRequest?.invoke()
                         }
                     }
                 }

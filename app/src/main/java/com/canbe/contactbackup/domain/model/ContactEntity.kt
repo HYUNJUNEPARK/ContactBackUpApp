@@ -1,6 +1,7 @@
 package com.canbe.contactbackup.domain.model
 
 import android.net.Uri
+import com.canbe.contactbackup.data.model.ContactDto
 import com.canbe.contactbackup.ui.model.ContactUiModel
 
 data class ContactEntity(
@@ -22,5 +23,17 @@ fun ContactEntity.toUiModel(): ContactUiModel {
         organization = organization,
         note = note,
         profileUri = profileUri
+    )
+}
+
+fun ContactEntity.toDto(): ContactDto {
+    return ContactDto(
+        contactId = id,
+        displayNamePrimary = name,
+        phoneNumbers = numbers,
+        emailAddresses = emails,
+        organizationCompany = organization,
+        notes = note,
+        contactPhotoUri = profileUri?.toString()
     )
 }
