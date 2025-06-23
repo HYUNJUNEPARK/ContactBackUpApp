@@ -60,7 +60,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.content.ContextCompat
 import com.canbe.contactbackup.R
-import com.canbe.contactbackup.ui.dialog.CustomDefaultDialog
+import com.canbe.contactbackup.ui.dialog.CustomCloseButtonDialog
 import com.canbe.contactbackup.ui.model.ContactUiModel
 import com.canbe.contactbackup.ui.model.EventType
 import com.canbe.contactbackup.ui.model.UiEvent
@@ -142,13 +142,11 @@ fun MainScreen(
             is UiEvent.ShowDialog -> {
                 when (event.eventType) {
                     EventType.EXPORT -> {
-                        CustomDefaultDialog(
+                        CustomCloseButtonDialog(
                             title = stringResource(R.string.export_file_2),
                             content = "연락처를 파일로 저장합니다.\n생성된 파일은 [다운로드] 폴더에서 확인하세요.",
-                            leftButtonText = stringResource(R.string.close),
-                            onLeftButtonRequest = { pendingUiEvent = null },
-                            rightButtonText = stringResource(R.string.export_file_2),
-                            onRightButtonRequest = {
+                            buttonText = stringResource(R.string.export_file_2),
+                            onButtonRequest = {
                                 val filenameSuffix = if (Build.VERSION.SDK_INT >= 26) {
                                     val current = LocalDateTime.now()
                                     val formatter = DateTimeFormatter.ofPattern("yyMMddHHmmss")
@@ -162,7 +160,7 @@ fun MainScreen(
                                 viewModel.exportToFile("ContactBackup_${filenameSuffix}.json")
                                 pendingUiEvent = null
                             },
-                            onDismissRequest = { pendingUiEvent = null },
+                            onDismissRequest = { pendingUiEvent = null }
                         )
                     }
                     else -> Timber.e("Not Handling this eventType: ${event.eventType}")

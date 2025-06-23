@@ -24,7 +24,7 @@ class FileDataSource @Inject constructor(
      * JSON 파일 저장
      */
     fun exportToFile(
-        fileName: String = "PHONE_NUMBER_BACKUP_${System.currentTimeMillis()}.json",
+        fileName: String,
         fileContent: String,
         directory: String = Environment.DIRECTORY_DOWNLOADS
     ) {
