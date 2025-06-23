@@ -53,8 +53,9 @@ fun MyApp(
                     activity.startActivity(intent)
                 },
                 onNavigationToContactDetail = { contact ->
-                    viewModel.setSelectContact(contact)
-                    navController.navigate(MainScreenType.CONTACT_DETAIL.name)
+                    //TODO 출시 후 기능 추가
+//                    viewModel.setSelectContact(contact)
+//                    navController.navigate(MainScreenType.CONTACT_DETAIL.name)
                 }
             )
         }

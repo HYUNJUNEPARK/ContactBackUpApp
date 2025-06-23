@@ -9,8 +9,6 @@ class ContactRepositoryImpl @Inject constructor(
     private val contactDataSource: ContactDataSource
 ) : ContactRepository {
     override suspend fun getContactList(): List<ContactEntity> {
-        return contactDataSource.getContactList().map {
-            it.toEntity()
-        }
+        return contactDataSource.getContactList().map { it.toEntity() }
     }
 }

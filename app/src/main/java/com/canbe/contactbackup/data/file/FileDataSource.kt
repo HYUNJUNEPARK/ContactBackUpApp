@@ -106,6 +106,9 @@ class FileDataSource @Inject constructor(
         }
     }
 
+    /**
+     * cf. 이름, 전화번호가 중복되는 경우 저장되지 않음
+     */
     fun saveContactsToDevice(contactList: List<ContactDto>) {
         Timber.i("saveContactsToDevice() contactList size(${contactList.size})")
 
@@ -129,7 +132,7 @@ class FileDataSource @Inject constructor(
                             ContactsContract.Data.MIMETYPE,
                             ContactsContract.CommonDataKinds.StructuredName.CONTENT_ITEM_TYPE
                         )
-                        .withValue(ContactsContract.CommonDataKinds.StructuredName.DISPLAY_NAME, it)
+                        .withValue(ContactsContract.CommonDataKinds.StructuredName.DISPLAY_NAME, "${it}_${System.currentTimeMillis()}")
                         .build()
                 )
             }
@@ -194,14 +197,12 @@ class FileDataSource @Inject constructor(
             }
 
             // 7. 사진 URI는 직접 넣을 수 없고, InputStream 으로 처리해야 하므로 생략 또는 확장 처리 필요
-
             try {
+                Timber.i("saveContactsToDevice() operations: $operations")
                 contentResolver.applyBatch(ContactsContract.AUTHORITY, operations)
             } catch (e: Exception) {
                 Timber.e("Exception saveContactsToDevice(): $e")
                 e.printStackTrace()
-                // 예외 처리 (중복, 권한 없음 등)
-                //Permission Denial: writing com.samsung.android.providers.contacts.SamsungContactsProvider2 uri content://com.android.contacts/raw_contacts from pid=27442, uid=10346 requires android.permission.WRITE_CONTACTS, or grantUriPermission()
             }
         }
     }
