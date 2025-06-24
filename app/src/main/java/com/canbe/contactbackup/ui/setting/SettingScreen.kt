@@ -1,5 +1,6 @@
 package com.canbe.contactbackup.ui.setting
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -29,7 +30,10 @@ import com.canbe.contactbackup.ui.theme.ContactBackupTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SettingScreen(onBack: () -> Unit) {
+fun SettingScreen(
+    onBack: () -> Unit,
+    onPolicyButtonClick: () -> Unit
+) {
     val appVersion = if (BuildConfig.DEBUG) {
         "${BuildConfig.VERSION_NAME}(${BuildConfig.VERSION_CODE})"
     } else {
@@ -61,8 +65,11 @@ fun SettingScreen(onBack: () -> Unit) {
                 verticalArrangement = Arrangement.Center
             ) {
                 Box(
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clickable { onPolicyButtonClick() }
                 ) {
+
                     Text(
                         modifier = Modifier.padding(20.dp),
                         text = "개인 정보 처리 방침"
@@ -72,7 +79,9 @@ fun SettingScreen(onBack: () -> Unit) {
                 Spacer(modifier = Modifier.weight(1f))
 
                 Row(
-                    modifier = Modifier.fillMaxWidth().padding(20.dp)
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(20.dp)
                 ) {
                     Text(text = "앱 버전")
 
@@ -90,6 +99,9 @@ fun SettingScreen(onBack: () -> Unit) {
 @Composable
 fun SettingScreenPreview() {
     ContactBackupTheme {
-        SettingScreen({})
+        SettingScreen(
+            onBack = {},
+            onPolicyButtonClick = {}
+        )
     }
 }

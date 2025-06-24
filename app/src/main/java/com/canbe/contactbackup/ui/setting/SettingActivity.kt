@@ -1,6 +1,7 @@
 package com.canbe.contactbackup.ui.setting
 
 import android.os.Bundle
+import android.widget.Toast
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import com.canbe.contactbackup.ui.base.BaseActivity
@@ -13,7 +14,11 @@ class SettingActivity : BaseActivity() {
         setContent {
             ContactBackupTheme {
                 SettingScreen(
-                    onBack = { this.finish() }
+                    onBack = { this.finish() },
+                    onPolicyButtonClick = {
+                        //TODO 개인정보 처리 방침 URL 추가
+                        Toast.makeText(this, "AAAAA", Toast.LENGTH_SHORT).show()
+                    }
                 )
             }
         }
