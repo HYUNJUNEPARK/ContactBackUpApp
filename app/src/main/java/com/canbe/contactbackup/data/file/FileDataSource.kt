@@ -9,6 +9,9 @@ import android.os.Environment
 import android.provider.ContactsContract
 import android.provider.MediaStore
 import com.canbe.contactbackup.data.model.ContactDto
+import com.canbe.contactbackup.exception.ExportFileException
+import com.canbe.contactbackup.exception.ExtractDataFromFileException
+import com.canbe.contactbackup.exception.SaveContactException
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import timber.log.Timber
@@ -73,7 +76,7 @@ class FileDataSource @Inject constructor(
         } catch (e: IOException) {
             Timber.e("Exception exportToFile(): $e")
             e.printStackTrace()
-            throw e
+            throw ExportFileException("${e.message}")
         }
     }
 
@@ -103,7 +106,7 @@ class FileDataSource @Inject constructor(
         } catch (e: Exception) {
             Timber.e("Exception extractDataFromFile(): $e")
             e.printStackTrace()
-            throw e
+            throw ExtractDataFromFileException("${e.message}")
         }
     }
 
@@ -204,7 +207,7 @@ class FileDataSource @Inject constructor(
             } catch (e: Exception) {
                 Timber.e("Exception saveContactsToDevice(): $e")
                 e.printStackTrace()
-                throw e
+                throw SaveContactException("${e.message}")
             }
         }
     }

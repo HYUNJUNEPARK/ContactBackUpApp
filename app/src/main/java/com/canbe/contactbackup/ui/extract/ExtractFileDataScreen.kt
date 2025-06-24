@@ -9,7 +9,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
@@ -49,7 +48,6 @@ import com.canbe.contactbackup.ui.model.ContactUiModel
 import com.canbe.contactbackup.ui.model.DialogEventType
 import com.canbe.contactbackup.ui.model.UiEvent
 import com.canbe.contactbackup.ui.model.UiState
-import com.canbe.contactbackup.ui.theme.AppTheme
 import com.canbe.contactbackup.ui.theme.ContactBackupTheme
 import com.canbe.contactbackup.ui.theme.ContactItem
 import com.canbe.contactbackup.ui.theme.CustomDefaultButton
@@ -215,8 +213,8 @@ fun ExtractFileDataScreenContent(
                 }
 
                 when(uiState) {
-                    is UiState.Loading -> CircularProgressIndicator(color = Mint)
-                    is UiState.Success -> {}
+                    is UiState.ProgressLoading -> CircularProgressIndicator(color = Mint)
+                    is UiState.FinishLoading -> {}
                     else -> {}
                 }
             }
@@ -236,7 +234,7 @@ fun ExtractFileDataScreenPreview() {
                 ContactUiModel("1", "12", listOf("01010100101"), listOf("audzxcv"), "asdf", "", null),
                 ContactUiModel("1", "12", listOf("01010100101"), listOf("audzxcv"), "asdf", "", null),
             ),
-            uiState = UiState.Loading,
+            uiState = UiState.ProgressLoading,
             onGetFileData = {},
             onBackUpButtonClick = {}
         )

@@ -277,8 +277,8 @@ fun MainScreenContent(
                         contentAlignment = Alignment.Center
                     ) {
                         when(uiState) {
-                            is UiState.Loading -> CircularProgressIndicator(color = AppTheme)
-                            is UiState.Success -> {}
+                            is UiState.ProgressLoading -> CircularProgressIndicator(color = AppTheme)
+                            is UiState.FinishLoading -> {}
                             else -> {}
                         }
 
@@ -439,7 +439,7 @@ fun MainScreenPreview() {
                 ContactUiModel("1", "12", listOf("01010100101"), listOf("audzxcv"), "asdf", "", null),
                 ContactUiModel("1", "12", listOf("01010100101"), listOf("audzxcv"), "asdf", "", null),
             ),
-            uiState = UiState.Loading,
+            uiState = UiState.ProgressLoading,
             isPermissionGranted = true,
             onNavigateToSetting = {},
             onGoToExtractFileDataActivity = {},

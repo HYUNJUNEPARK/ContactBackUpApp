@@ -28,14 +28,14 @@ class ExtractFileDataViewModel @Inject constructor(
      */
     fun extractFromFile(uri: Uri) = launchInViewModelScope {
         Timber.d("extractFromFile(): $uri")
-        updateUiState(UiState.Loading)
+        updateUiState(UiState.ProgressLoading)
 
         val fileContent = extractFileDataUseCase(uri)
         Timber.d("extractFromFile() fileContent: $fileContent")
 
         _contactList.value = fileContent
 
-        updateUiState(UiState.Success)
+        updateUiState(UiState.FinishLoading)
         updateUiEvent(UiEvent.ShowDialog(DialogEventType.SUCCESS_GET_CONTACTS))
     }
 
@@ -44,11 +44,11 @@ class ExtractFileDataViewModel @Inject constructor(
      */
     fun saveContactsToDevice() = launchInViewModelScope {
         Timber.d("saveContactsToDevice()")
-        updateUiState(UiState.Loading)
+        updateUiState(UiState.ProgressLoading)
 
         saveContactsToDeviceUseCase(contactList.value)
 
-        updateUiState(UiState.Success)
+        updateUiState(UiState.FinishLoading)
         updateUiEvent(UiEvent.ShowToast(R.string.success_restore_contact))
     }
 }

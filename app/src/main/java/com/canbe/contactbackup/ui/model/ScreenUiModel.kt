@@ -1,8 +1,8 @@
 package com.canbe.contactbackup.ui.model
 
 sealed class UiState {
-    data object Loading : UiState()
-    data object Success : UiState()
+    data object ProgressLoading : UiState()
+    data object FinishLoading : UiState()
 }
 
 sealed class UiEvent {

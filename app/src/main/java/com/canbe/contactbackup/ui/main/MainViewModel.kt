@@ -26,11 +26,11 @@ class MainViewModel @Inject constructor(
 
     fun getContacts() = launchInViewModelScope {
         Timber.d("getContacts(): ${contactList.value}")
-        updateUiState(UiState.Loading)
+        updateUiState(UiState.ProgressLoading)
 
         _contactList.value = getContactListUserCase.invoke()
 
-        updateUiState(UiState.Success)
+        updateUiState(UiState.FinishLoading)
     }
 
     fun exportToFile(fileName: String) = launchInViewModelScope {
@@ -41,11 +41,11 @@ class MainViewModel @Inject constructor(
             throw NoContactsInDevice()
             //return@launchInViewModelScope
         }
-        updateUiState(UiState.Loading)
+        updateUiState(UiState.ProgressLoading)
 
         exportFileUseCase(fileName, contactList.value)
 
-        updateUiState(UiState.Success)
+        updateUiState(UiState.FinishLoading)
         updateUiEvent(UiEvent.ShowToast(R.string.success_save_contact_file))
     }
 
