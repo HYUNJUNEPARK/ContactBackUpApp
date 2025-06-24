@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">연락처 백업</string>
     <string name="contact">연락처</string>
-    <string name="contact_backup">연락처 백업</string>
+<!--    <string name="contact_backup">연락처 백업</string>-->
     <string name="setting">설정</string>
     <string name="go_to_setting">권한 설정</string>
     <string name="msg_allow_contact">연락처 접근 권한을 허용해 주세요.</string>
@@ -14,5 +14,8 @@
     <string name="export_file_2">파일로 내보내기</string>
     <string name="title_activity_setting">SettingActivity</string>
     <string name="confirm">확인</string>
+    <string name="save_contact_as_file">연락처를 파일로 저장합니다.\n생성된 파일은 [다운로드] 폴더에서 확인하세요.</string>
+    <string name="success_save_contact_file">연락처를 파일로 저장했습니다.</string>
+    <string name="success_restore_contact">연락처를 복원했습니다.</string>
     <!--    <string name="cancel">취소</string>-->
 </resources>

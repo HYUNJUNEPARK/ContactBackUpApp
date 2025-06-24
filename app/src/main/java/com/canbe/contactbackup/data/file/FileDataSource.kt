@@ -73,6 +73,7 @@ class FileDataSource @Inject constructor(
         } catch (e: IOException) {
             Timber.e("Exception exportToFile(): $e")
             e.printStackTrace()
+            throw e
         }
     }
 
@@ -132,7 +133,7 @@ class FileDataSource @Inject constructor(
                             ContactsContract.Data.MIMETYPE,
                             ContactsContract.CommonDataKinds.StructuredName.CONTENT_ITEM_TYPE
                         )
-                        .withValue(ContactsContract.CommonDataKinds.StructuredName.DISPLAY_NAME, "${it}_${System.currentTimeMillis()}")
+                        .withValue(ContactsContract.CommonDataKinds.StructuredName.DISPLAY_NAME, it)
                         .build()
                 )
             }
@@ -203,6 +204,7 @@ class FileDataSource @Inject constructor(
             } catch (e: Exception) {
                 Timber.e("Exception saveContactsToDevice(): $e")
                 e.printStackTrace()
+                throw e
             }
         }
     }

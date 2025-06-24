@@ -52,7 +52,7 @@ fun MyApp(
                     val intent = Intent(activity, ExtractFileDataActivity::class.java)
                     activity.startActivity(intent)
                 },
-                onNavigationToContactDetail = { contact ->
+                onNavigationToContactDetail = { //contact ->
                     //TODO 출시 후 기능 추가
 //                    viewModel.setSelectContact(contact)
 //                    navController.navigate(MainScreenType.CONTACT_DETAIL.name)
@@ -60,10 +60,10 @@ fun MyApp(
             )
         }
         composable(MainScreenType.CONTACT_DETAIL.name) {
-            ContactDetailScreen (
-                viewModel = viewModel,
-                onBack = { navController.popBackStack() }
-            )
+//            ContactDetailScreen (
+//                viewModel = viewModel,
+//                onBack = { navController.popBackStack() }
+//            )
         }
     }
 }

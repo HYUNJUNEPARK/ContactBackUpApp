@@ -3,15 +3,15 @@ package com.canbe.contactbackup.ui.extract
 import android.net.Uri
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
-import androidx.lifecycle.viewModelScope
+import com.canbe.contactbackup.R
 import com.canbe.contactbackup.domain.file.ExtractFileDataUseCase
 import com.canbe.contactbackup.domain.file.SaveContactsToDeviceUseCase
 import com.canbe.contactbackup.ui.base.BaseViewModel
 import com.canbe.contactbackup.ui.model.ContactUiModel
+import com.canbe.contactbackup.ui.model.DialogEventType
+import com.canbe.contactbackup.ui.model.UiEvent
 import com.canbe.contactbackup.ui.model.UiState
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -23,7 +23,10 @@ class ExtractFileDataViewModel @Inject constructor(
     private val _contactList = mutableStateOf<List<ContactUiModel>>(emptyList())
     val contactList: State<List<ContactUiModel>> = _contactList
 
-    fun extractFromFile(uri: Uri) = viewModelScope.launch(Dispatchers.IO) {
+    /**
+     * JSON 파일에서 컨텐츠를 추출해, 연락처 리스트를 뷰에 업데이트한다.
+     */
+    fun extractFromFile(uri: Uri) = launchInViewModelScope {
         Timber.d("extractFromFile(): $uri")
         updateUiState(UiState.Loading)
 
@@ -35,8 +38,16 @@ class ExtractFileDataViewModel @Inject constructor(
         updateUiState(UiState.Success)
     }
 
-    fun saveContactsToDevice() = viewModelScope.launch(Dispatchers.IO) {
+    /**
+     * 연락처 리스트를 디바이스에 저장한다.
+     */
+    fun saveContactsToDevice() = launchInViewModelScope {
         Timber.d("saveContactsToDevice()")
+        updateUiState(UiState.Loading)
+
         saveContactsToDeviceUseCase(contactList.value)
+
+        updateUiState(UiState.Success)
+        updateUiEvent(UiEvent.ShowToast(R.string.success_restore_contact))
     }
 }

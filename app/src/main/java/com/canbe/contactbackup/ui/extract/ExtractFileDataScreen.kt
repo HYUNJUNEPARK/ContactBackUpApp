@@ -1,6 +1,7 @@
 package com.canbe.contactbackup.ui.extract
 
 import android.net.Uri
+import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
@@ -22,7 +23,11 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -36,13 +41,18 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.canbe.contactbackup.R
+import com.canbe.contactbackup.exception.convertToErrorMessage
+import com.canbe.contactbackup.ui.dialog.CustomDefaultDialog
 import com.canbe.contactbackup.ui.model.ContactUiModel
+import com.canbe.contactbackup.ui.model.DialogEventType
+import com.canbe.contactbackup.ui.model.UiEvent
 import com.canbe.contactbackup.ui.model.UiState
+import com.canbe.contactbackup.ui.theme.ContactBackupTheme
 import com.canbe.contactbackup.ui.theme.ContactItem
 import com.canbe.contactbackup.ui.theme.CustomDefaultButton
 import com.canbe.contactbackup.ui.theme.FixedTextStyle
 import com.canbe.contactbackup.ui.theme.Mint
-import com.canbe.contactbackup.ui.theme.ContactBackupTheme
+import timber.log.Timber
 
 @Composable
 fun ExtractFileDataScreen(
@@ -50,8 +60,45 @@ fun ExtractFileDataScreen(
     onBack: () -> Unit
 ) {
     val context = LocalContext.current
+
     val contactList = viewModel.contactList
+
     val uiState by viewModel.uiState
+
+    var pendingUiEvent by remember { mutableStateOf<UiEvent?>(null) }
+
+    LaunchedEffect(Unit) {
+        viewModel.uiEvent.collect { uiEvent ->
+            when(uiEvent) {
+                is UiEvent.ShowDialog -> { pendingUiEvent = uiEvent }
+                is UiEvent.ShowToast -> {
+                    val message = context.getString(uiEvent.messageResId)
+                    Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
+                }
+            }
+        }
+    }
+
+    //UiEvent Handler
+    pendingUiEvent?.let { event ->
+        when (event) {
+            is UiEvent.ShowDialog -> {
+                when (event.dialogEventType) {
+                    DialogEventType.ERROR -> {
+                        CustomDefaultDialog(
+                            content = convertToErrorMessage(event.e),
+                            isRightButtonVisible = false,
+                            leftButtonText = stringResource(R.string.confirm),
+                            onLeftButtonRequest = { pendingUiEvent = null },
+                            onDismissRequest = { pendingUiEvent = null }
+                        )
+                    }
+                    else -> { Timber.e("Not Handling this eventType: ${event.dialogEventType}") }
+                }
+            }
+            else -> Timber.e("Not Handling this eventType: $event")
+        }
+    }
 
     ExtractFileDataScreenContent(
         onBack = onBack,

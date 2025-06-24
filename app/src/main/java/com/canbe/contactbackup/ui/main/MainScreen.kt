@@ -64,7 +64,7 @@ import com.canbe.contactbackup.exception.convertToErrorMessage
 import com.canbe.contactbackup.ui.dialog.CustomCloseButtonDialog
 import com.canbe.contactbackup.ui.dialog.CustomDefaultDialog
 import com.canbe.contactbackup.ui.model.ContactUiModel
-import com.canbe.contactbackup.ui.model.EventType
+import com.canbe.contactbackup.ui.model.DialogEventType
 import com.canbe.contactbackup.ui.model.UiEvent
 import com.canbe.contactbackup.ui.model.UiState
 import com.canbe.contactbackup.ui.theme.ButtonDefaultColors
@@ -139,7 +139,10 @@ fun MainScreen(
         viewModel.uiEvent.collect { uiEvent ->
             when(uiEvent) {
                 is UiEvent.ShowDialog -> { pendingUiEvent = uiEvent }
-                is UiEvent.ShowToast -> { Toast.makeText(context, uiEvent.message, Toast.LENGTH_SHORT).show() }
+                is UiEvent.ShowToast -> {
+                    val message = context.getString(uiEvent.messageResId)
+                    Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
+                }
             }
         }
     }
@@ -148,11 +151,11 @@ fun MainScreen(
     pendingUiEvent?.let { event ->
         when (event) {
             is UiEvent.ShowDialog -> {
-                when (event.eventType) {
-                    EventType.EXPORT -> {
+                when (event.dialogEventType) {
+                    DialogEventType.REQUEST_EXPORT -> {
                         CustomCloseButtonDialog(
                             title = stringResource(R.string.export_file_2),
-                            content = "연락처를 파일로 저장합니다.\n생성된 파일은 [다운로드] 폴더에서 확인하세요.",
+                            content = stringResource(R.string.save_contact_as_file),
                             buttonText = stringResource(R.string.export_file_2),
                             onButtonRequest = {
                                 val filenameSuffix = if (Build.VERSION.SDK_INT >= 26) {
@@ -171,17 +174,16 @@ fun MainScreen(
                             onDismissRequest = { pendingUiEvent = null }
                         )
                     }
-                    EventType.ERROR -> {
-                        val errorMessage = convertToErrorMessage(event.e)
-
+                    DialogEventType.ERROR -> {
                         CustomDefaultDialog(
-                            content = errorMessage,
+                            content = convertToErrorMessage(event.e),
                             isRightButtonVisible = false,
                             leftButtonText = stringResource(R.string.confirm),
                             onLeftButtonRequest = { pendingUiEvent = null },
                             onDismissRequest = { pendingUiEvent = null }
                         )
                     }
+                    else -> { Timber.e("Not Handling this eventType: ${event.dialogEventType}") }
                 }
             }
             else -> Timber.e("Not Handling this eventType: $event")
@@ -194,7 +196,7 @@ fun MainScreen(
         uiState = uiState,
         isPermissionGranted = isPermissionGranted,
         onNavigateToSetting = onStartSettingActivity,
-        onExportFileClick = { viewModel.updateUiEvent(UiEvent.ShowDialog(EventType.EXPORT)) },
+        onExportFileClick = { viewModel.updateUiEvent(UiEvent.ShowDialog(DialogEventType.REQUEST_EXPORT)) },
         onGoToExtractFileDataActivity = onStartExtractFileDataActivity,
         onContactItemClick = { onNavigationToContactDetail(it) }
     )
