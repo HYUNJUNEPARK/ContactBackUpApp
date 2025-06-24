@@ -12,5 +12,6 @@ sealed class UiEvent {
 
 enum class DialogEventType {
     REQUEST_EXPORT,
+    SUCCESS_GET_CONTACTS,
     ERROR
 }

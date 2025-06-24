@@ -84,6 +84,17 @@ fun ExtractFileDataScreen(
         when (event) {
             is UiEvent.ShowDialog -> {
                 when (event.dialogEventType) {
+                    DialogEventType.SUCCESS_GET_CONTACTS -> {
+                        CustomDefaultDialog(
+                            title = "알림",
+                            content = "연락처 ${contactList.value.size}개를 불러왔습니다.",
+                            buttonColor = Mint,
+                            isRightButtonVisible = false,
+                            leftButtonText = stringResource(R.string.confirm),
+                            onLeftButtonRequest = { pendingUiEvent = null },
+                            onDismissRequest = { pendingUiEvent = null }
+                        )
+                    }
                     DialogEventType.ERROR -> {
                         CustomDefaultDialog(
                             content = convertToErrorMessage(event.e),

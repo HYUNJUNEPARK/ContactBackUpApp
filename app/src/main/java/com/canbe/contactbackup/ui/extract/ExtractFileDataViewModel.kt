@@ -36,6 +36,7 @@ class ExtractFileDataViewModel @Inject constructor(
         _contactList.value = fileContent
 
         updateUiState(UiState.Success)
+        updateUiEvent(UiEvent.ShowDialog(DialogEventType.SUCCESS_GET_CONTACTS))
     }
 
     /**

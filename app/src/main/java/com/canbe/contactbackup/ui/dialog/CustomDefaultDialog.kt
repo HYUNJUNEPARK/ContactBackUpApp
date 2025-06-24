@@ -19,12 +19,15 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
+import com.canbe.contactbackup.ui.theme.AppTheme
 import com.canbe.contactbackup.ui.theme.CustomDefaultButton
+import com.canbe.contactbackup.ui.theme.Mint
 
 @Composable
 fun CustomDefaultDialog(
     title: String? = null,
     content: String,
+    buttonColor: Color = AppTheme,
     isRightButtonVisible: Boolean = true,
     leftButtonText: String,
     onLeftButtonRequest: () -> Unit,
@@ -57,12 +60,12 @@ fun CustomDefaultDialog(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.spacedBy(16.dp, Alignment.CenterHorizontally)
                 ) {
-                    CustomDefaultButton(leftButtonText) {
+                    CustomDefaultButton(leftButtonText, buttonColor) {
                         onLeftButtonRequest()
                     }
 
                     if(isRightButtonVisible) {
-                        CustomDefaultButton(rightButtonText) {
+                        CustomDefaultButton(rightButtonText, buttonColor) {
                             onRightButtonRequest?.invoke()
                         }
                     }
@@ -78,6 +81,7 @@ fun CustomDialogPreview() {
     CustomDefaultDialog(
         title = "Title",
         content = "Content",
+        buttonColor = AppTheme,
         isRightButtonVisible = true,
         leftButtonText = "Left Button",
         rightButtonText = "Right Button",
