@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
@@ -16,6 +17,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.outlined.ArrowBack
 import androidx.compose.material3.CenterAlignedTopAppBar
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
@@ -47,6 +49,7 @@ import com.canbe.contactbackup.ui.model.ContactUiModel
 import com.canbe.contactbackup.ui.model.DialogEventType
 import com.canbe.contactbackup.ui.model.UiEvent
 import com.canbe.contactbackup.ui.model.UiState
+import com.canbe.contactbackup.ui.theme.AppTheme
 import com.canbe.contactbackup.ui.theme.ContactBackupTheme
 import com.canbe.contactbackup.ui.theme.ContactItem
 import com.canbe.contactbackup.ui.theme.CustomDefaultButton
@@ -86,8 +89,8 @@ fun ExtractFileDataScreen(
                 when (event.dialogEventType) {
                     DialogEventType.SUCCESS_GET_CONTACTS -> {
                         CustomDefaultDialog(
-                            title = "알림",
-                            content = "연락처 ${contactList.value.size}개를 불러왔습니다.",
+                            title = stringResource(R.string.alarm),
+                            content = stringResource(R.string.get_contacts_count, contactList.value.size),
                             buttonColor = Mint,
                             isRightButtonVisible = false,
                             leftButtonText = stringResource(R.string.confirm),
@@ -125,7 +128,7 @@ fun ExtractFileDataScreen(
 fun ExtractFileDataScreenContent(
     onBack: () -> Unit,
     contactList: List<ContactUiModel>,
-    uiState: UiState,
+    uiState: UiState?,
     onGetFileData: (Uri) -> Unit,
     onBackUpButtonClick: () -> Unit,
 ) {
@@ -153,12 +156,11 @@ fun ExtractFileDataScreenContent(
             )
         },
         content = { padding ->
-            Column(
+            Box(
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(padding),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Center
+                contentAlignment = Alignment.Center
             ) {
                 if (contactList.isEmpty()) {
                     //복원 가능한 연락처가 없는 경우
@@ -200,8 +202,7 @@ fun ExtractFileDataScreenContent(
                                     modifier = Modifier.size(32.dp)
                                 )
                                 Text(
-                                    modifier = Modifier
-                                        .padding(vertical = 3.dp),
+                                    modifier = Modifier.padding(vertical = 3.dp),
                                     style = FixedTextStyle(8.sp),
                                     textAlign = TextAlign.Center,
                                     text = stringResource(R.string.restore_contact),
@@ -211,6 +212,12 @@ fun ExtractFileDataScreenContent(
                             }
                         }
                     }
+                }
+
+                when(uiState) {
+                    is UiState.Loading -> CircularProgressIndicator(color = Mint)
+                    is UiState.Success -> {}
+                    else -> {}
                 }
             }
         }

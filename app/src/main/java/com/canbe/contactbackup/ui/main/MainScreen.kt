@@ -67,6 +67,7 @@ import com.canbe.contactbackup.ui.model.ContactUiModel
 import com.canbe.contactbackup.ui.model.DialogEventType
 import com.canbe.contactbackup.ui.model.UiEvent
 import com.canbe.contactbackup.ui.model.UiState
+import com.canbe.contactbackup.ui.theme.AppTheme
 import com.canbe.contactbackup.ui.theme.ButtonDefaultColors
 import com.canbe.contactbackup.ui.theme.ContactBackupTheme
 import com.canbe.contactbackup.ui.theme.ContactItem
@@ -207,7 +208,7 @@ fun MainScreen(
 fun MainScreenContent(
     context: Context,
     contactList: List<ContactUiModel>,
-    uiState: UiState,
+    uiState: UiState?,
     isPermissionGranted: Boolean,
     onNavigateToSetting: () -> Unit,
     onExportFileClick: () -> Unit,
@@ -276,8 +277,9 @@ fun MainScreenContent(
                         contentAlignment = Alignment.Center
                     ) {
                         when(uiState) {
-                            is UiState.Loading -> CircularProgressIndicator(color = colorResource(R.color.appTheme))
+                            is UiState.Loading -> CircularProgressIndicator(color = AppTheme)
                             is UiState.Success -> {}
+                            else -> {}
                         }
 
                         LazyColumn(

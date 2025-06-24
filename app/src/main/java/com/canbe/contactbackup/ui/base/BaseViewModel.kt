@@ -29,8 +29,8 @@ open class BaseViewModel: ViewModel() {
         Timber.tag(LOG_TAG_LIFE_CYCLE).i("${javaClass.simpleName} onCleared()")
     }
 
-    private val _uiState = mutableStateOf<UiState>(UiState.Loading)
-    val uiState: State<UiState> = _uiState
+    private val _uiState = mutableStateOf<UiState?>(null)
+    val uiState: State<UiState?> = _uiState
 
     private val _uiEvent = MutableSharedFlow<UiEvent>()
     val uiEvent: SharedFlow<UiEvent> = _uiEvent
