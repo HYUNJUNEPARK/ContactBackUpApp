@@ -43,14 +43,18 @@ android {
 }
 
 dependencies {
+    // Core Android 기능
     implementation(libs.androidx.core.ktx)
+    // Lifecycle + Coroutine
     implementation(libs.androidx.lifecycle.runtime.ktx)
+    // Compose 관련
     implementation(libs.androidx.activity.compose)
     implementation(platform(libs.androidx.compose.bom))
     implementation(libs.androidx.ui)
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
+    // 테스트
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

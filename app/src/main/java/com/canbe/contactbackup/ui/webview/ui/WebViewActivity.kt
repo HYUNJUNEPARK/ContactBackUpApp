@@ -10,8 +10,8 @@ import android.webkit.WebView
 import androidx.activity.compose.setContent
 import androidx.compose.material3.ExperimentalMaterial3Api
 import com.canbe.contactbackup.ui.base.BaseActivity
-import com.canbe.contactbackup.ui.webview.WebView.WEB_VIEW_TITLE_INTENT_KEY
-import com.canbe.contactbackup.ui.webview.WebView.WEB_VIEW_URL_INTENT_KEY
+import com.canbe.contactbackup.ui.webview.CustomWebView.WEB_VIEW_TITLE_INTENT_KEY
+import com.canbe.contactbackup.ui.webview.CustomWebView.WEB_VIEW_URL_INTENT_KEY
 
 class WebViewActivity : BaseActivity() {
     @OptIn(ExperimentalMaterial3Api::class)

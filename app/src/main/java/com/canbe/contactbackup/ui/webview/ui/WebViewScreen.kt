@@ -145,7 +145,6 @@ fun WebViewScreen(
                         webChromeClient = object : WebChromeClient() {
                             override fun onProgressChanged(view: WebView?, newProgress: Int) {
                                 Timber.d("onProgressChanged() $newProgress")
-                                //onProgress(newProgress)
                                 progress = newProgress
                             }
                         }
