@@ -1,3 +1,6 @@
+import java.io.FileInputStream
+import java.util.Properties
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
@@ -14,19 +17,31 @@ android {
         applicationId = "com.canbe.contactbackup"
         minSdk = 24
         targetSdk = 35
-        versionCode = 250000
+        versionCode = 250701
         versionName = "1.0.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
+    signingConfigs {
+        val properties = Properties().apply {
+            load(FileInputStream("${rootDir}/local.properties"))
+        }
+
+        create("release") {
+            storeFile = file("../keystore/contactBackup.jks")
+            keyAlias = "${properties["keyAlias"]}"
+            storePassword = "${properties["storePassword"]}"
+            keyPassword = "${properties["keyPassword"]}"
+        }
+    }
+
     buildTypes {
         release {
             isMinifyEnabled = false
-            proguardFiles(
-                getDefaultProguardFile("proguard-android-optimize.txt"),
-                "proguard-rules.pro"
-            )
+            isDebuggable = false
+            proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
+            signingConfig = signingConfigs.getByName("release")
         }
     }
     compileOptions {
