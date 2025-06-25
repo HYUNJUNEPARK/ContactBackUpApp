@@ -72,7 +72,7 @@ fun SettingScreen(
 
                     Text(
                         modifier = Modifier.padding(20.dp),
-                        text = "개인 정보 처리 방침"
+                        text = stringResource(R.string.policy)
                     )
                 }
 

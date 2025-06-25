@@ -1,11 +1,13 @@
 package com.canbe.contactbackup.ui.setting
 
 import android.os.Bundle
-import android.widget.Toast
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import com.canbe.contactbackup.R
+import com.canbe.contactbackup.constants.POLICY_URL
 import com.canbe.contactbackup.ui.base.BaseActivity
 import com.canbe.contactbackup.ui.theme.ContactBackupTheme
+import com.canbe.contactbackup.ui.webview.WebView
 
 class SettingActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -16,8 +18,7 @@ class SettingActivity : BaseActivity() {
                 SettingScreen(
                     onBack = { this.finish() },
                     onPolicyButtonClick = {
-                        //TODO 개인정보 처리 방침 URL 추가
-                        Toast.makeText(this, "AAAAA", Toast.LENGTH_SHORT).show()
+                        WebView.startWebView(this, POLICY_URL, getString(R.string.policy))
                     }
                 )
             }

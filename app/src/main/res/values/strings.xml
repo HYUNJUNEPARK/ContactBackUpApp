@@ -19,5 +19,6 @@
     <string name="success_restore_contact">연락처를 복원했습니다.</string>
     <string name="alarm">알림</string>
     <string name="get_contacts_count">연락처 %1$s개를 불러왔습니다.</string>
+    <string name="policy">개인 정보 처리 방침</string>
     <!--    <string name="cancel">취소</string>-->
 </resources>
