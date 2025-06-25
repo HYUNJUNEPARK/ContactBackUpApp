@@ -195,7 +195,7 @@ fun ExtractFileDataScreenContent(
                                 verticalArrangement = Arrangement.Center
                             ) {
                                 Image(
-                                    painter = painterResource(R.drawable.ic_outline_file_upload_24),
+                                    painter = painterResource(R.drawable.ic_file_upload_24),
                                     contentDescription = "FAB Button: Export File",
                                     modifier = Modifier.size(32.dp)
                                 )

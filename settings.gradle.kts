@@ -21,4 +21,4 @@ dependencyResolutionManagement {
 
 rootProject.name = "ContactBackup"
 include(":app")
- 
+include(":feat-webview")

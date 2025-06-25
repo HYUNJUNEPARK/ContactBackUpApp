@@ -1,10 +1,9 @@
-package com.canbe.contactbackup.ui.webview
+package com.canbe.defaultwebview
 
 import android.content.Context
 import android.content.Intent
-import com.canbe.contactbackup.ui.webview.ui.WebViewActivity
 
-object CustomWebView {
+object WebViewer {
     const val WEB_VIEW_URL_INTENT_KEY = "module.webview.url"
     const val WEB_VIEW_TITLE_INTENT_KEY = "module.webview.title"
 

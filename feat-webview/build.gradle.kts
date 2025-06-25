@@ -1,23 +1,18 @@
 plugins {
-    alias(libs.plugins.android.application)
+    alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
-    id("com.google.dagger.hilt.android")
-    id("kotlin-kapt")
 }
 
 android {
-    namespace = "com.canbe.contactbackup"
+    namespace = "com.canbe.defaultwebview"
     compileSdk = 35
 
     defaultConfig {
-        applicationId = "com.canbe.contactbackup"
         minSdk = 24
-        targetSdk = 35
-        versionCode = 250000
-        versionName = "1.0.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        //consumerProguardFiles("consumer-rules.pro")
     }
 
     buildTypes {
@@ -37,24 +32,21 @@ android {
         jvmTarget = "11"
     }
     buildFeatures {
-        buildConfig = true
         compose = true
     }
 }
 
 dependencies {
-    // Core Android 기능
     implementation(libs.androidx.core.ktx)
-    // Lifecycle + Coroutine
+    implementation(libs.androidx.appcompat)
+    implementation(libs.material)
     implementation(libs.androidx.lifecycle.runtime.ktx)
-    // Compose 관련
     implementation(libs.androidx.activity.compose)
     implementation(platform(libs.androidx.compose.bom))
     implementation(libs.androidx.ui)
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
-    // 테스트
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -62,18 +54,4 @@ dependencies {
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
-    // Compose navigation: rememberNavController()
-    implementation(libs.androidx.navigation.compose)
-    // Hilt
-    implementation(libs.hilt.android)
-    kapt(libs.hilt.compiler)
-    implementation(libs.androidx.hilt.navigation.compose)
-    // Timber
-    implementation(libs.timber)
-    // Coil
-    implementation(libs.coil.compose)
-    // Gson
-    implementation(libs.gson)
-    // Module
-    implementation(project(":feat-webview"))
 }

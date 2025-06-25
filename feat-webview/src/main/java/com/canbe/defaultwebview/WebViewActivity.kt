@@ -1,4 +1,4 @@
-package com.canbe.contactbackup.ui.webview.ui
+package com.canbe.defaultwebview
 
 import android.content.Context
 import android.content.Intent
@@ -7,26 +7,30 @@ import android.os.Bundle
 import android.webkit.CookieManager
 import android.webkit.WebStorage
 import android.webkit.WebView
+import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.activity.enableEdgeToEdge
 import androidx.compose.material3.ExperimentalMaterial3Api
-import com.canbe.contactbackup.ui.base.BaseActivity
-import com.canbe.contactbackup.ui.webview.CustomWebView.WEB_VIEW_TITLE_INTENT_KEY
-import com.canbe.contactbackup.ui.webview.CustomWebView.WEB_VIEW_URL_INTENT_KEY
+import com.canbe.defaultwebview.WebViewer.WEB_VIEW_TITLE_INTENT_KEY
+import com.canbe.defaultwebview.WebViewer.WEB_VIEW_URL_INTENT_KEY
+import com.canbe.defaultwebview.ui.theme.CustomWebViewTheme
 
-class WebViewActivity : BaseActivity() {
+class WebViewActivity : ComponentActivity() {
     @OptIn(ExperimentalMaterial3Api::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
+        enableEdgeToEdge()
         setContent {
-            WebViewScreen(
-                title = intent.getStringExtra(WEB_VIEW_TITLE_INTENT_KEY),
-                url = intent.getStringExtra(WEB_VIEW_URL_INTENT_KEY) ?: "",
-                onCloseClick = { finish() },
-                onSendEmailClick = { emailList ->
-                    startEmailApp(emailList)
-                }
-            )
+            CustomWebViewTheme {
+                WebViewScreen(
+                    title = intent.getStringExtra(WEB_VIEW_TITLE_INTENT_KEY),
+                    url = intent.getStringExtra(WEB_VIEW_URL_INTENT_KEY) ?: "",
+                    onCloseClick = { finish() },
+                    onSendEmailClick = { emailList ->
+                        startEmailApp(emailList)
+                    }
+                )
+            }
         }
     }
 

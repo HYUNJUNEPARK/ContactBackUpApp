@@ -1,4 +1,4 @@
-package com.canbe.contactbackup.ui.webview.ui.theme
+package com.canbe.defaultwebview.ui.theme
 
 import android.os.Build
 import androidx.compose.foundation.isSystemInDarkTheme

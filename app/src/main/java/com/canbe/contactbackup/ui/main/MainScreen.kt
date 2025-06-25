@@ -253,9 +253,8 @@ fun MainScreenContent(
                 actions = {
                     IconButton(onClick = onNavigateToSetting) {
                         Icon(
-                            imageVector = Icons.Outlined.Settings,
+                            painter = painterResource(R.drawable.ic_settings_24),
                             contentDescription = "설정 버튼",
-                            tint = colorResource(R.color.gray)
                         )
                     }
                 },
@@ -357,7 +356,7 @@ fun FabButton(
                     verticalArrangement = Arrangement.Center
                 ) {
                     Image(
-                        painter = painterResource(R.drawable.ic_outline_file_download_24),
+                        painter = painterResource(R.drawable.ic_file_download_24),
                         contentDescription = "FAB Button: Export File",
                         modifier = Modifier.size(32.dp)
                     )
@@ -393,7 +392,7 @@ fun FabButton(
                     verticalArrangement = Arrangement.Center
                 ) {
                     Image(
-                        painter = painterResource(R.drawable.ic_outline_file_upload_24),
+                        painter = painterResource(R.drawable.ic_file_upload_24),
                         contentDescription = "FAB Button: Export File",
                         modifier = Modifier.size(32.dp)
                     )
