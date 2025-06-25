@@ -21,7 +21,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import com.canbe.contactbackup.ui.theme.AppTheme
 import com.canbe.contactbackup.ui.theme.CustomDefaultButton
-import com.canbe.contactbackup.ui.theme.Mint
 
 @Composable
 fun CustomDefaultDialog(

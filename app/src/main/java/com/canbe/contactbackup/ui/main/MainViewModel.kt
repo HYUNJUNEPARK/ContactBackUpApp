@@ -22,8 +22,6 @@ class MainViewModel @Inject constructor(
     private val _contactList = mutableStateOf<List<ContactUiModel>>(emptyList())
     val contactList: State<List<ContactUiModel>> = _contactList
 
-    //var selectedContact by mutableStateOf<ContactUiModel?>(null)
-
     fun getContacts() = launchInViewModelScope {
         Timber.d("getContacts(): ${contactList.value}")
         updateUiState(UiState.ProgressLoading)
@@ -48,14 +46,4 @@ class MainViewModel @Inject constructor(
         updateUiState(UiState.FinishLoading)
         updateUiEvent(UiEvent.ShowToast(R.string.success_save_contact_file))
     }
-
-//    fun setSelectContact(contactUiModel: ContactUiModel) {
-//        Timber.d("setSelectContact() $contactUiModel")
-//        selectedContact = contactUiModel
-//    }
-//
-//    fun clearSelectContact() {
-//        Timber.d("clearSelectContact()")
-//        selectedContact = null
-//    }
 }
