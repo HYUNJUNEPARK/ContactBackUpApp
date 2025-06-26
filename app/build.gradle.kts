@@ -17,7 +17,7 @@ android {
         applicationId = "com.canbe.contactbackup"
         minSdk = 24
         targetSdk = 35
-        versionCode = 250701
+        versionCode = 250702
         versionName = "1.0.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
@@ -29,7 +29,7 @@ android {
         }
 
         create("release") {
-            storeFile = file("../keystore/contactBackup.jks")
+            storeFile = file("../keystore/cbKeystore.jks")
             keyAlias = "${properties["keyAlias"]}"
             storePassword = "${properties["storePassword"]}"
             keyPassword = "${properties["keyPassword"]}"
@@ -38,7 +38,7 @@ android {
 
     buildTypes {
         release {
-            isMinifyEnabled = false
+            isMinifyEnabled = true
             isDebuggable = false
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
             signingConfig = signingConfigs.getByName("release")
