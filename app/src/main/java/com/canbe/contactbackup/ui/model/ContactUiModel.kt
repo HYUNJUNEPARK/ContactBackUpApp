@@ -24,3 +24,15 @@ fun ContactUiModel.toEntity(): ContactEntity {
         profileUri = profileUri
     )
 }
+
+fun ContactEntity.toUiModel(): ContactUiModel {
+    return ContactUiModel(
+        id = id,
+        name = name,
+        numbers = numbers,
+        emails = emails,
+        organization = organization,
+        note = note,
+        profileUri = profileUri
+    )
+}

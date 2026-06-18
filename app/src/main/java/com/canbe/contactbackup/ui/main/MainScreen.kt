@@ -71,7 +71,6 @@ import com.canbe.contactbackup.ui.theme.ContactItem
 import com.canbe.contactbackup.ui.theme.FixedTextStyle
 import com.canbe.contactbackup.ui.theme.Mint
 import com.canbe.contactbackup.ui.theme.Orange
-import com.canbe.contactbackup.ui.theme.PurpleLight
 import timber.log.Timber
 import java.text.SimpleDateFormat
 import java.time.LocalDateTime
@@ -174,7 +173,7 @@ fun MainScreen(
                     }
                     DialogEventType.ERROR -> {
                         CustomDefaultDialog(
-                            content = convertToErrorMessage(event.e),
+                            content = convertToErrorMessage(context, event.e),
                             isRightButtonVisible = false,
                             leftButtonText = stringResource(R.string.confirm),
                             onLeftButtonRequest = { pendingUiEvent = null },
@@ -345,7 +344,7 @@ fun FabButton(
                 modifier = Modifier
                     .padding(bottom = 170.dp)
                     .size(68.dp),
-                containerColor = PurpleLight
+                containerColor = AppTheme
             ) {
                 Column(
                     Modifier.padding(3.dp),

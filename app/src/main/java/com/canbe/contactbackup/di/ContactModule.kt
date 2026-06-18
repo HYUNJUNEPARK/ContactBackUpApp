@@ -2,10 +2,9 @@ package com.canbe.contactbackup.di
 
 import android.content.ContentResolver
 import android.content.Context
-import com.canbe.contactbackup.data.contact.ContactDataSource
 import com.canbe.contactbackup.data.contact.ContactRepositoryImpl
 import com.canbe.contactbackup.domain.contact.ContactRepository
-import com.canbe.contactbackup.domain.contact.GetContactListUseCase
+import dagger.Binds
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -14,16 +13,13 @@ import dagger.hilt.components.SingletonComponent
 
 @Module
 @InstallIn(SingletonComponent::class)
-object ContactModule {
-    @Provides
-    fun provideContentResolver(@ApplicationContext context: Context): ContentResolver = context.contentResolver
+abstract class ContactModule {
+    @Binds
+    abstract fun bindContactRepository(impl: ContactRepositoryImpl): ContactRepository
 
-    @Provides
-    fun provideContactDataSource(contentResolver: ContentResolver): ContactDataSource = ContactDataSource(contentResolver)
-
-    @Provides
-    fun provideContactRepository(dataSource: ContactDataSource): ContactRepository = ContactRepositoryImpl(dataSource)
-
-    @Provides
-    fun provideGetContactUseCase(repository: ContactRepository): GetContactListUseCase = GetContactListUseCase(repository)
+    companion object {
+        @Provides
+        fun provideContentResolver(@ApplicationContext context: Context): ContentResolver =
+            context.contentResolver
+    }
 }

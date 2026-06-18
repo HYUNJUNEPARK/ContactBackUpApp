@@ -11,6 +11,8 @@ import com.canbe.contactbackup.ui.model.ContactUiModel
 import com.canbe.contactbackup.ui.model.DialogEventType
 import com.canbe.contactbackup.ui.model.UiEvent
 import com.canbe.contactbackup.ui.model.UiState
+import com.canbe.contactbackup.ui.model.toEntity
+import com.canbe.contactbackup.ui.model.toUiModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import timber.log.Timber
 import javax.inject.Inject
@@ -30,10 +32,10 @@ class ExtractFileDataViewModel @Inject constructor(
         Timber.d("extractFromFile(): $uri")
         updateUiState(UiState.ProgressLoading)
 
-        val fileContent = extractFileDataUseCase(uri)
-        Timber.d("extractFromFile() fileContent: $fileContent")
+        val entities = extractFileDataUseCase(uri)
+        Timber.d("extractFromFile() entities: $entities")
 
-        _contactList.value = fileContent
+        _contactList.value = entities.map { it.toUiModel() }
 
         updateUiState(UiState.FinishLoading)
         updateUiEvent(UiEvent.ShowDialog(DialogEventType.SUCCESS_GET_CONTACTS))
@@ -46,7 +48,8 @@ class ExtractFileDataViewModel @Inject constructor(
         Timber.d("saveContactsToDevice()")
         updateUiState(UiState.ProgressLoading)
 
-        saveContactsToDeviceUseCase(contactList.value)
+        val entities = contactList.value.map { it.toEntity() }
+        saveContactsToDeviceUseCase(entities)
 
         updateUiState(UiState.FinishLoading)
         updateUiEvent(UiEvent.ShowToast(R.string.success_restore_contact))

@@ -98,7 +98,7 @@ fun ExtractFileDataScreen(
                     }
                     DialogEventType.ERROR -> {
                         CustomDefaultDialog(
-                            content = convertToErrorMessage(event.e),
+                            content = convertToErrorMessage(context, event.e),
                             isRightButtonVisible = false,
                             leftButtonText = stringResource(R.string.confirm),
                             onLeftButtonRequest = { pendingUiEvent = null },

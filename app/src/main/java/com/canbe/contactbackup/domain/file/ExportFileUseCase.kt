@@ -1,7 +1,6 @@
 package com.canbe.contactbackup.domain.file
 
-import com.canbe.contactbackup.ui.model.ContactUiModel
-import com.canbe.contactbackup.ui.model.toEntity
+import com.canbe.contactbackup.domain.model.ContactEntity
 import javax.inject.Inject
 
 class ExportFileUseCase @Inject constructor(
@@ -9,9 +8,8 @@ class ExportFileUseCase @Inject constructor(
 ) {
     suspend operator fun invoke(
         fileName: String,
-        contactList: List<ContactUiModel>
+        contactList: List<ContactEntity>
     ) {
-        val contacts = contactList.map { it.toEntity() }
-        repository.exportToFile(fileName, contacts)
+        repository.exportToFile(fileName, contactList)
     }
 }
