@@ -3,11 +3,9 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <uses-permission android:name="android.permission.READ_CONTACTS" />
-    <uses-permission android:name="android.permission.READ_CONTACTS" /> <!-- API 28 이하에서는 WRITE_EXTERNAL_STORAGE 퍼미션이 필요 -->
     <uses-permission
         android:name="android.permission.WRITE_EXTERNAL_STORAGE"
-        android:maxSdkVersion="28" /> <!-- AndroidManifest.xml -->
-    <!-- API 32 이하에서는 READ_EXTERNAL_STORAGE 퍼미션이 필요 -->
+        android:maxSdkVersion="28" />
     <uses-permission
         android:name="android.permission.READ_EXTERNAL_STORAGE"
         android:maxSdkVersion="32" />

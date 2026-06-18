@@ -6,19 +6,20 @@ plugins {
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
     id("com.google.dagger.hilt.android")
-    id("kotlin-kapt")
+    alias(libs.plugins.ksp)
 }
 
 android {
     namespace = "com.canbe.contactbackup"
-    compileSdk = 35
+    compileSdk = 37
 
     defaultConfig {
         applicationId = "com.canbe.contactbackup"
         minSdk = 24
-        targetSdk = 35
-        versionCode = 250702
-        versionName = "1.0.0"
+        //noinspection EditedTargetSdkVersion
+        targetSdk = 37
+        versionCode = 260601
+        versionName = "1.0.1"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -81,7 +82,7 @@ dependencies {
     implementation(libs.androidx.navigation.compose)
     // Hilt
     implementation(libs.hilt.android)
-    kapt(libs.hilt.compiler)
+    ksp(libs.hilt.compiler)
     implementation(libs.androidx.hilt.navigation.compose)
     // Timber
     implementation(libs.timber)
