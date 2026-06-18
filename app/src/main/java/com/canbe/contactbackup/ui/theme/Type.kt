@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import androidx.compose.material3.Typography
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
@@ -39,10 +40,16 @@ val Typography = Typography(
 
 @SuppressLint("ComposableNaming")
 @Composable
-fun FixedTextStyle(fontSize: TextUnit = 12.sp) : TextStyle {
+fun FixedTextStyle(
+    fontSize: TextUnit = 12.sp,
+    color: Color = Color.Unspecified
+) : TextStyle {
     val configuration = LocalConfiguration.current
 
     val fontScale = configuration.fontScale
 
-    return TextStyle(fontSize = fontSize / fontScale)
+    return TextStyle(
+        fontSize = fontSize / fontScale,
+        color = color
+    )
 }

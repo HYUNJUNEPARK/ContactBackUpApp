@@ -1,4 +1,4 @@
-package com.canbe.defaultwebview
+package com.canbe.contactbackup.ui.webview
 
 import android.content.Context
 import android.content.Intent
@@ -11,9 +11,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.material3.ExperimentalMaterial3Api
-import com.canbe.defaultwebview.WebViewer.WEB_VIEW_TITLE_INTENT_KEY
-import com.canbe.defaultwebview.WebViewer.WEB_VIEW_URL_INTENT_KEY
-import com.canbe.defaultwebview.ui.theme.CustomWebViewTheme
+import com.canbe.contactbackup.ui.theme.ContactBackupTheme
 
 class WebViewActivity : ComponentActivity() {
     @OptIn(ExperimentalMaterial3Api::class)
@@ -21,10 +19,10 @@ class WebViewActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            CustomWebViewTheme {
+            ContactBackupTheme {
                 WebViewScreen(
-                    title = intent.getStringExtra(WEB_VIEW_TITLE_INTENT_KEY),
-                    url = intent.getStringExtra(WEB_VIEW_URL_INTENT_KEY) ?: "",
+                    title = intent.getStringExtra(WebViewer.WEB_VIEW_TITLE_INTENT_KEY),
+                    url = intent.getStringExtra(WebViewer.WEB_VIEW_URL_INTENT_KEY) ?: "",
                     onCloseClick = { finish() },
                     onSendEmailClick = { emailList ->
                         startEmailApp(emailList)

@@ -1,4 +1,4 @@
-package com.canbe.defaultwebview
+package com.canbe.contactbackup.ui.webview
 
 import android.content.Context
 import android.content.Intent

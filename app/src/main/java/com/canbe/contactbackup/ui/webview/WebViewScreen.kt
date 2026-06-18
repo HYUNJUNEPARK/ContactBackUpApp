@@ -1,4 +1,4 @@
-package com.canbe.defaultwebview
+package com.canbe.contactbackup.ui.webview
 
 import android.annotation.SuppressLint
 import android.webkit.WebChromeClient
@@ -37,8 +37,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
-import com.canbe.defaultwebview.ui.theme.CustomWebViewTheme
-import com.canbe.defaultwebview.ui.theme.FixedTextStyle
+import com.canbe.contactbackup.ui.theme.ContactBackupTheme
+import com.canbe.contactbackup.ui.theme.FixedTextStyle
 
 @SuppressLint("SetJavaScriptEnabled")
 @ExperimentalMaterial3Api
@@ -99,8 +99,6 @@ fun WebViewScreen(
 
                         webViewClient = object : WebViewClient() {
                             override fun shouldOverrideUrlLoading(view: WebView?, request: WebResourceRequest?): Boolean {
-                                //Timber.i("WebView shouldOverrideUrlLoading() url: ${request?.url}")
-
                                 //웹 화면에서 이메일 전송 버튼 클릭 -> 기본 이메일 앱 실행
                                 if (request?.url.toString().contains("mailto:")) {
                                     val email = request?.url.toString().substringAfter("mailto:")
@@ -113,36 +111,21 @@ fun WebViewScreen(
                             }
 
                             override fun onPageStarted(view: WebView?, url: String?, favicon: android.graphics.Bitmap?) {
-                                //Timber.i("WebView onPageStarted() url: $url")
                             }
 
                             override fun onPageFinished(view: WebView?, url: String?) {
-                                //Timber.i("WebView onPageFinished() url: $url")
                             }
 
-                            /**
-                             * This method is called when an error occurs while loading resources (e.g., network issues).
-                             */
-                            /**
-                             * This method is called when an error occurs while loading resources (e.g., network issues).
-                             */
                             override fun onReceivedError(view: WebView?, request: WebResourceRequest?, error: WebResourceError?) {
                                 super.onReceivedError(view, request, error)
-                                //Timber.e("onReceivedError(): ${request?.url}, error: ${error?.errorCode}, ${error?.description}")
                             }
-                            /**
-                             * This method is called when the WebView receives an HTTP error (e.g., 404 or 500 status codes).
-                             */
-                            /**
-                             * This method is called when the WebView receives an HTTP error (e.g., 404 or 500 status codes).
-                             */
+
                             override fun onReceivedHttpError(view: WebView?, request: WebResourceRequest?, errorResponse: WebResourceResponse?) {
                                 super.onReceivedHttpError(view, request, errorResponse)
                             }
                         }
                         webChromeClient = object : WebChromeClient() {
                             override fun onProgressChanged(view: WebView?, newProgress: Int) {
-                                //Timber.d("onProgressChanged() $newProgress")
                                 progress = newProgress
                             }
                         }
@@ -168,7 +151,7 @@ fun WebViewScreen(
 @Preview
 @Composable
 private fun PreviewWebViewScreen() {
-    CustomWebViewTheme {
+    ContactBackupTheme {
         WebViewScreen(
             title = null,
             url = "",

@@ -7,7 +7,7 @@ import com.canbe.contactbackup.R
 import com.canbe.contactbackup.constants.POLICY_URL
 import com.canbe.contactbackup.ui.base.BaseActivity
 import com.canbe.contactbackup.ui.theme.ContactBackupTheme
-import com.canbe.defaultwebview.WebViewer
+import com.canbe.contactbackup.ui.webview.WebViewer
 
 class SettingActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
