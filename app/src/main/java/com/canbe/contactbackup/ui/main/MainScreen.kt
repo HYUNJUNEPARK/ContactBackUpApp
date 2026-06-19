@@ -37,12 +37,15 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
+import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -95,40 +98,40 @@ fun MainScreen(
     //UI 이벤트: 다이얼로그, Toast 등 동작
     var pendingUiEvent by remember { mutableStateOf<UiEvent?>(null) }
 
-    //LaunchedEffect 가 한번 실행되면 true 로 변경
-    val hasLaunched = rememberSaveable { mutableStateOf(false) }
-
     //권한 획득 여부
     var isPermissionGranted by remember { mutableStateOf(false) }
     val permissionList = listOf(Manifest.permission.READ_CONTACTS, Manifest.permission.WRITE_CONTACTS)
     val permissionLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.RequestMultiplePermissions()
     ) { permissions ->
-        val grantedPermissions = permissions.filter { it.value }
-        val notGrantedPermissions = permissions.filter { !it.value }
-        Timber.d("grantedPermissions($grantedPermissions), notGrantedPermissions($notGrantedPermissions)")
+        Timber.d("permissions result: $permissions")
 
         //메인 화면에서 꼭 필요한 권한만 있으면 동작
-        isPermissionGranted = grantedPermissions.contains(Manifest.permission.READ_CONTACTS)
+        isPermissionGranted = permissions[Manifest.permission.READ_CONTACTS] == true
 
         //권한이 있다면 연락처 가져오기
         if (isPermissionGranted) viewModel.getContacts()
     }
 
-    LaunchedEffect(Unit) {
-        //연락처 읽기 권한 확인
-        isPermissionGranted = (ContextCompat.checkSelfPermission(context, Manifest.permission.READ_CONTACTS) == PackageManager.PERMISSION_GRANTED)
-
-        if (isPermissionGranted) {
-            //권한이 허용 되었을 때 -> 연락처 가져오기
-            Timber.d("LaunchedEffect(), 권한 허용")
-
-            if (!hasLaunched.value) {
-                viewModel.getContacts()
-                hasLaunched.value = true
+    //Activity onResume 시 연락처 새로고침
+    val lifecycleOwner = LocalLifecycleOwner.current
+    DisposableEffect(lifecycleOwner) {
+        val observer = LifecycleEventObserver { _, event ->
+            if (event == Lifecycle.Event.ON_RESUME) {
+                isPermissionGranted = (ContextCompat.checkSelfPermission(context, Manifest.permission.READ_CONTACTS) == PackageManager.PERMISSION_GRANTED)
+                if (isPermissionGranted) {
+                    Timber.d("onResume -> 연락처 새로고침")
+                    viewModel.getContacts()
+                }
             }
-        } else {
-            //권한 허용이 되지 않았을 때, 권한 요청
+        }
+        lifecycleOwner.lifecycle.addObserver(observer)
+        onDispose { lifecycleOwner.lifecycle.removeObserver(observer) }
+    }
+
+    LaunchedEffect(Unit) {
+        //권한 허용이 되지 않았을 때, 권한 요청
+        if (ContextCompat.checkSelfPermission(context, Manifest.permission.READ_CONTACTS) != PackageManager.PERMISSION_GRANTED) {
             Timber.d("LaunchedEffect(), 권한 미허용 -> 권한 요청")
             permissionLauncher.launch(permissionList.toTypedArray())
         }
@@ -137,8 +140,9 @@ fun MainScreen(
             when(uiEvent) {
                 is UiEvent.ShowDialog -> { pendingUiEvent = uiEvent }
                 is UiEvent.ShowToast -> {
-                    val message = context.getString(uiEvent.messageResId)
-                    Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
+                    val appContext = context.applicationContext
+                    val message = appContext.getString(uiEvent.messageResId)
+                    Toast.makeText(appContext, message, Toast.LENGTH_SHORT).show()
                 }
             }
         }
