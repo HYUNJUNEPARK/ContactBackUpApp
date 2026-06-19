@@ -99,7 +99,9 @@ fun MainScreen(
     var pendingUiEvent by remember { mutableStateOf<UiEvent?>(null) }
 
     //권한 획득 여부
-    var isPermissionGranted by remember { mutableStateOf(false) }
+    var isPermissionGranted by remember {
+        mutableStateOf(ContextCompat.checkSelfPermission(context, Manifest.permission.READ_CONTACTS) == PackageManager.PERMISSION_GRANTED)
+    }
     val permissionList = listOf(Manifest.permission.READ_CONTACTS, Manifest.permission.WRITE_CONTACTS)
     val permissionLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.RequestMultiplePermissions()
