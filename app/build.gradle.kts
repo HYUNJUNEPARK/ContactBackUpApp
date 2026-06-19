@@ -36,9 +36,26 @@ android {
         }
     }
 
+    flavorDimensions += "environment"
+    productFlavors {
+        create("dev") {
+            dimension = "environment"
+            applicationIdSuffix = ".dev"
+            versionNameSuffix = "-dev"
+            manifestPlaceholders["admobAppId"] = "ca-app-pub-3940256099942544~3347511713"
+            buildConfigField("String", "ADMOB_BANNER_AD_UNIT_ID", "\"ca-app-pub-3940256099942544/9214589741\"")
+        }
+        create("prod") {
+            dimension = "environment"
+            manifestPlaceholders["admobAppId"] = "ca-app-pub-9897511106810694~5664276244"
+            buildConfigField("String", "ADMOB_BANNER_AD_UNIT_ID", "\"ca-app-pub-9897511106810694/8574610692\"")
+        }
+    }
+
     buildTypes {
         release {
             isMinifyEnabled = true
+            isShrinkResources = true
             isDebuggable = false
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
             signingConfig = signingConfigs.getByName("release")
@@ -87,4 +104,6 @@ dependencies {
     implementation(libs.coil.compose)
     // Gson
     implementation(libs.gson)
+    // Google AdMob
+    implementation(libs.google.ads)
 }

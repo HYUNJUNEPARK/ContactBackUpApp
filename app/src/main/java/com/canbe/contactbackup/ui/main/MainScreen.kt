@@ -73,6 +73,7 @@ import com.canbe.contactbackup.ui.theme.ContactBackupTheme
 import com.canbe.contactbackup.ui.theme.ContactItem
 import com.canbe.contactbackup.ui.theme.FixedTextStyle
 import com.canbe.contactbackup.ui.theme.Mint
+import com.canbe.contactbackup.ui.ad.AdBanner
 import com.canbe.contactbackup.ui.theme.Orange
 import timber.log.Timber
 import java.text.SimpleDateFormat
@@ -268,9 +269,10 @@ fun MainScreenContent(
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(padding),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Center
             ) {
+                //광고 배너
+                AdBanner()
+
                 if (isPermissionGranted) {
                     //연락처 접근 권한이 허용된 경우
                     Box(
@@ -300,25 +302,31 @@ fun MainScreenContent(
                     }
                 } else {
                     //권한이 없는 경우
-                    Text(
-                        textAlign = TextAlign.Center,
-                        text = stringResource(R.string.msg_allow_contact)
-                    )
-
-                    Button(
-                        modifier = Modifier.padding(top = 24.dp),
-                        colors = ButtonDefaultColors(),
-                        onClick = {
-                            val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).apply {
-                                data = Uri.fromParts("package", context.packageName, null)
-                            }
-                            context.startActivity(intent)
-                        }
+                    Column(
+                        modifier = Modifier.fillMaxSize(),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.Center
                     ) {
                         Text(
-                            text = stringResource(R.string.go_to_setting),
-                            fontWeight = FontWeight.Bold
+                            textAlign = TextAlign.Center,
+                            text = stringResource(R.string.msg_allow_contact)
                         )
+
+                        Button(
+                            modifier = Modifier.padding(top = 24.dp),
+                            colors = ButtonDefaultColors(),
+                            onClick = {
+                                val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).apply {
+                                    data = Uri.fromParts("package", context.packageName, null)
+                                }
+                                context.startActivity(intent)
+                            }
+                        ) {
+                            Text(
+                                text = stringResource(R.string.go_to_setting),
+                                fontWeight = FontWeight.Bold
+                            )
+                        }
                     }
                 }
             }
